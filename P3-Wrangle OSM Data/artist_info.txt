@@ -1,0 +1,464 @@
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+{
+    "artists": [
+        {
+            "area": {
+                "id": "471c46a7-afc5-31c4-923c-d0444f5053a4", 
+                "name": "Spain", 
+                "sort-name": "Spain"
+            }, 
+            "begin-area": {
+                "id": "12c3b82e-fcab-4219-9bd5-792089d8280e", 
+                "name": "Barcelona", 
+                "sort-name": "Barcelona"
+            }, 
+            "country": "ES", 
+            "disambiguation": "Spanish indie electronic band", 
+            "id": "e4466078-fb0f-4899-98a2-7c7dfeb14714", 
+            "life-span": {
+                "begin": "2004", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "type": "Group"
+        }, 
+        {
+            "area": {
+                "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb", 
+                "name": "Sweden", 
+                "sort-name": "Sweden"
+            }, 
+            "begin-area": {
+                "id": "1127ddc2-eab3-4662-8718-6adbdeea3b10", 
+                "name": "Stockholm", 
+                "sort-name": "Stockholm"
+            }, 
+            "country": "SE", 
+            "disambiguation": "Swedish folk band", 
+            "id": "373faa02-74d7-4b1d-9b47-7574ad510f8d", 
+            "life-span": {
+                "begin": "2007", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "tags": [
+                {
+                    "count": 0, 
+                    "name": "remember"
+                }
+            ], 
+            "type": "Group"
+        }
+    ], 
+    "count": 2, 
+    "created": "2017-03-22T05:17:21.373Z", 
+    "offset": 0
+}
+
+ARTIST:
+2
+requesting http://musicbrainz.org/ws/2/artist/373faa02-74d7-4b1d-9b47-7574ad510f8d?fmt=json&inc=releases
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+{
+    "artists": [
+        {
+            "area": {
+                "id": "471c46a7-afc5-31c4-923c-d0444f5053a4", 
+                "name": "Spain", 
+                "sort-name": "Spain"
+            }, 
+            "begin-area": {
+                "id": "12c3b82e-fcab-4219-9bd5-792089d8280e", 
+                "name": "Barcelona", 
+                "sort-name": "Barcelona"
+            }, 
+            "country": "ES", 
+            "disambiguation": "Spanish indie electronic band", 
+            "id": "e4466078-fb0f-4899-98a2-7c7dfeb14714", 
+            "life-span": {
+                "begin": "2004", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "type": "Group"
+        }, 
+        {
+            "area": {
+                "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb", 
+                "name": "Sweden", 
+                "sort-name": "Sweden"
+            }, 
+            "begin-area": {
+                "id": "1127ddc2-eab3-4662-8718-6adbdeea3b10", 
+                "name": "Stockholm", 
+                "sort-name": "Stockholm"
+            }, 
+            "country": "SE", 
+            "disambiguation": "Swedish folk band", 
+            "id": "373faa02-74d7-4b1d-9b47-7574ad510f8d", 
+            "life-span": {
+                "begin": "2007", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "tags": [
+                {
+                    "count": 0, 
+                    "name": "remember"
+                }
+            ], 
+            "type": "Group"
+        }
+    ], 
+    "count": 2, 
+    "created": "2017-03-22T06:21:35.43Z", 
+    "offset": 0
+}
+
+ARTIST:
+2
+requesting http://musicbrainz.org/ws/2/artist/373faa02-74d7-4b1d-9b47-7574ad510f8d?fmt=json&inc=releases
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+{
+    "artists": [
+        {
+            "area": {
+                "id": "471c46a7-afc5-31c4-923c-d0444f5053a4", 
+                "name": "Spain", 
+                "sort-name": "Spain"
+            }, 
+            "begin-area": {
+                "id": "12c3b82e-fcab-4219-9bd5-792089d8280e", 
+                "name": "Barcelona", 
+                "sort-name": "Barcelona"
+            }, 
+            "country": "ES", 
+            "disambiguation": "Spanish indie electronic band", 
+            "id": "e4466078-fb0f-4899-98a2-7c7dfeb14714", 
+            "life-span": {
+                "begin": "2004", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "type": "Group"
+        }, 
+        {
+            "area": {
+                "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb", 
+                "name": "Sweden", 
+                "sort-name": "Sweden"
+            }, 
+            "begin-area": {
+                "id": "1127ddc2-eab3-4662-8718-6adbdeea3b10", 
+                "name": "Stockholm", 
+                "sort-name": "Stockholm"
+            }, 
+            "country": "SE", 
+            "disambiguation": "Swedish folk band", 
+            "id": "373faa02-74d7-4b1d-9b47-7574ad510f8d", 
+            "life-span": {
+                "begin": "2007", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "tags": [
+                {
+                    "count": 0, 
+                    "name": "remember"
+                }
+            ], 
+            "type": "Group"
+        }
+    ], 
+    "count": 2, 
+    "created": "2017-03-22T06:21:35.43Z", 
+    "offset": 0
+}
+
+ARTIST:
+2
+requesting http://musicbrainz.org/ws/2/artist/373faa02-74d7-4b1d-9b47-7574ad510f8d?fmt=json&inc=releases
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+{
+    "artists": [
+        {
+            "area": {
+                "id": "471c46a7-afc5-31c4-923c-d0444f5053a4", 
+                "name": "Spain", 
+                "sort-name": "Spain"
+            }, 
+            "begin-area": {
+                "id": "12c3b82e-fcab-4219-9bd5-792089d8280e", 
+                "name": "Barcelona", 
+                "sort-name": "Barcelona"
+            }, 
+            "country": "ES", 
+            "disambiguation": "Spanish indie electronic band", 
+            "id": "e4466078-fb0f-4899-98a2-7c7dfeb14714", 
+            "life-span": {
+                "begin": "2004", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "type": "Group"
+        }, 
+        {
+            "area": {
+                "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb", 
+                "name": "Sweden", 
+                "sort-name": "Sweden"
+            }, 
+            "begin-area": {
+                "id": "1127ddc2-eab3-4662-8718-6adbdeea3b10", 
+                "name": "Stockholm", 
+                "sort-name": "Stockholm"
+            }, 
+            "country": "SE", 
+            "disambiguation": "Swedish folk band", 
+            "id": "373faa02-74d7-4b1d-9b47-7574ad510f8d", 
+            "life-span": {
+                "begin": "2007", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "tags": [
+                {
+                    "count": 0, 
+                    "name": "remember"
+                }
+            ], 
+            "type": "Group"
+        }
+    ], 
+    "count": 2, 
+    "created": "2017-03-22T06:21:35.43Z", 
+    "offset": 0
+}
+
+ARTIST:
+2
+requesting http://musicbrainz.org/ws/2/artist/373faa02-74d7-4b1d-9b47-7574ad510f8d?fmt=json&inc=releases
+
+ONE RELEASE:
+{
+  "barcode": null, 
+  "country": "GB", 
+  "date": "2009-05-18", 
+  "disambiguation": "", 
+  "id": "0cc76694-14f6-424d-aa4a-0e4611940e1c", 
+  "packaging": null, 
+  "packaging-id": null, 
+  "quality": "normal", 
+  "release-events": [
+    {
+      "area": {
+        "disambiguation": "", 
+        "id": "8a754a16-0027-3a29-b6d7-2b40ea0481ed", 
+        "iso-3166-1-codes": [
+          "GB"
+        ], 
+        "name": "United Kingdom", 
+        "sort-name": "United Kingdom"
+      }, 
+      "date": "2009-05-18"
+    }
+  ], 
+  "status": "Official", 
+  "status-id": "4e304316-386d-3409-af2e-78857eec5cfe", 
+  "text-representation": {
+    "language": "eng", 
+    "script": "Latn"
+  }, 
+  "title": "Drunken Trees"
+}
+
+ALL TITLES:
+Drunken Trees
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+{
+    "artists": [
+        {
+            "area": {
+                "id": "471c46a7-afc5-31c4-923c-d0444f5053a4", 
+                "name": "Spain", 
+                "sort-name": "Spain"
+            }, 
+            "begin-area": {
+                "id": "12c3b82e-fcab-4219-9bd5-792089d8280e", 
+                "name": "Barcelona", 
+                "sort-name": "Barcelona"
+            }, 
+            "country": "ES", 
+            "disambiguation": "Spanish indie electronic band", 
+            "id": "e4466078-fb0f-4899-98a2-7c7dfeb14714", 
+            "life-span": {
+                "begin": "2004", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "type": "Group"
+        }, 
+        {
+            "area": {
+                "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb", 
+                "name": "Sweden", 
+                "sort-name": "Sweden"
+            }, 
+            "begin-area": {
+                "id": "1127ddc2-eab3-4662-8718-6adbdeea3b10", 
+                "name": "Stockholm", 
+                "sort-name": "Stockholm"
+            }, 
+            "country": "SE", 
+            "disambiguation": "Swedish folk band", 
+            "id": "373faa02-74d7-4b1d-9b47-7574ad510f8d", 
+            "life-span": {
+                "begin": "2007", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "tags": [
+                {
+                    "count": 0, 
+                    "name": "remember"
+                }
+            ], 
+            "type": "Group"
+        }
+    ], 
+    "count": 2, 
+    "created": "2017-03-22T06:21:35.43Z", 
+    "offset": 0
+}
+
+ARTIST:
+2
+requesting http://musicbrainz.org/ws/2/artist/373faa02-74d7-4b1d-9b47-7574ad510f8d?fmt=json&inc=releases
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+{
+    "artists": [
+        {
+            "area": {
+                "id": "471c46a7-afc5-31c4-923c-d0444f5053a4", 
+                "name": "Spain", 
+                "sort-name": "Spain"
+            }, 
+            "begin-area": {
+                "id": "12c3b82e-fcab-4219-9bd5-792089d8280e", 
+                "name": "Barcelona", 
+                "sort-name": "Barcelona"
+            }, 
+            "country": "ES", 
+            "disambiguation": "Spanish indie electronic band", 
+            "id": "e4466078-fb0f-4899-98a2-7c7dfeb14714", 
+            "life-span": {
+                "begin": "2004", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "type": "Group"
+        }, 
+        {
+            "area": {
+                "id": "23d10872-f5ae-3f0c-bf55-332788a16ecb", 
+                "name": "Sweden", 
+                "sort-name": "Sweden"
+            }, 
+            "begin-area": {
+                "id": "1127ddc2-eab3-4662-8718-6adbdeea3b10", 
+                "name": "Stockholm", 
+                "sort-name": "Stockholm"
+            }, 
+            "country": "SE", 
+            "disambiguation": "Swedish folk band", 
+            "id": "373faa02-74d7-4b1d-9b47-7574ad510f8d", 
+            "life-span": {
+                "begin": "2007", 
+                "ended": null
+            }, 
+            "name": "First Aid Kit", 
+            "score": "100", 
+            "sort-name": "First Aid Kit", 
+            "tags": [
+                {
+                    "count": 0, 
+                    "name": "remember"
+                }
+            ], 
+            "type": "Group"
+        }
+    ], 
+    "count": 2, 
+    "created": "2017-03-22T06:21:35.43Z", 
+    "offset": 0
+}
+
+ARTIST:
+2
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+2
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}]
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+2
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}]
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+2
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}]
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+2
+hello
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}]
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+2
+hello
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}]
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3A%22First+Aid+Kit%22&fmt=json
+2
+hello
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}]
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3AFirst+Aid+Kit&fmt=json
+25
+hello
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}, {u'name': u'FIRST AID', u'area': {u'sort-name': u'South Korea', u'id': u'b9f7d640-46e8-313e-b158-ded6d18593b3', u'name': u'South Korea'}, u'gender': u'male', u'disambiguation': u'Korean producer', u'life-span': {u'ended': None}, u'sort-name': u'FIRST AID', u'score': u'50', u'country': u'KR', u'type': u'Person', u'id': u'3266ea60-5690-464a-ae67-27c8681a9723', u'aliases': [{u'name': u'\uc5d0\uc774\ub4dc', u'locale': u'ko', u'end-date': None, u'primary': None, u'sort-name': u'\uc5d0\uc774\ub4dc', u'type': u'Artist name', u'begin-date': None}, {u'name': u'AID', u'locale': u'en', u'end-date': None, u'primary': None, u'sort-name': u'AID', u'type': u'Artist name', u'begin-date': None}]}, {u'name': u'First Aid', u'area': {u'sort-name': u'Russia', u'id': u'1f1fc3a4-9500-39b8-9f10-f0a465557eef', u'name': u'Russia'}, u'country': u'RU', u'disambiguation': u'Russian metal', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'48', u'type': u'Group', u'id': u'5bb6d8b6-dcd8-46e0-84dc-5a0d927c8475'}, {u'name': u'First Aid', u'area': {u'sort-name': u'Austria', u'id': u'caac77d1-a5c8-3e6e-8e27-90b44dcc1446', u'name': u'Austria'}, u'country': u'AT', u'disambiguation': u'Austrian Rockband', u'life-span': {u'ended': None, u'begin': u'2000'}, u'sort-name': u'First Aid', u'score': u'48', u'begin-area': {u'sort-name': u'Austria', u'id': u'caac77d1-a5c8-3e6e-8e27-90b44dcc1446', u'name': u'Austria'}, u'type': u'Group', u'id': u'268d84a6-620a-4a87-b467-d2236f9264b6'}, {u'name': u'First Aid', u'area': {u'sort-name': u'Estonia', u'id': u'e1c1215f-dcc0-35b4-b840-d2ca2151593b', u'name': u'Estonia'}, u'country': u'EE', u'disambiguation': u'Estonian band', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'48', u'type': u'Group', u'id': u'93d871dc-38f4-442e-8292-db7d670794ea'}, {u'name': u'First Aid', u'disambiguation': u'featured on \u201cStay the Night\u201d by Kuts & Mouse', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'48', u'id': u'3dae6add-712f-4592-8ece-da15d02ec943'}, {u'sort-name': u'First Aid 4 Souls', u'life-span': {u'ended': None}, u'score': u'39', u'id': u'612e0dcb-2b47-4feb-ad34-6259433de61d', u'name': u'First Aid 4 Souls'}, {u'name': u'The First Aid', u'life-span': {u'ended': None}, u'sort-name': u'First Aid, The', u'score': u'39', u'type': u'Group', u'id': u'c3eee377-bfd1-49fa-906c-7562db86a45d'}, {u'sort-name': u'DJ First Aid', u'life-span': {u'ended': None}, u'score': u'39', u'id': u'fbf39528-f7a1-491d-a5d4-94df61f88ad9', u'name': u'DJ First Aid'}, {u'name': u'First Aid', u'disambiguation': u'Germany', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'35', u'id': u'97b182ff-5f86-451c-b2b4-27840b7d512a'}, {u'name': u'A\xedd', u'life-span': {u'ended': None, u'begin': u'1990'}, u'sort-name': u'A\xedd', u'score': u'31', u'type': u'Person', u'id': u'ae609ba9-5df4-4ef4-aa4a-18805397ef24'}, {u'sort-name': u'K.I.T.', u'life-span': {u'ended': None}, u'score': u'27', u'id': u'ed6459f1-257f-433a-85c1-970b2fbbc0af', u'name': u'K.I.T.'}, {u'name': u'KIT', u'area': {u'sort-name': u'France', u'id': u'08310658-51eb-3801-80de-5a0739207115', u'name': u'France'}, u'country': u'FR', u'disambiguation': u'Paris electro-pop trio', u'life-span': {u'ended': None}, u'sort-name': u'KIT', u'score': u'27', u'type': u'Group', u'id': u'2d1caf76-ccd5-4cbc-a1b0-c36186c81c15'}, {u'name': u'Kit', u'disambiguation': u'song "Piss die Wand an" feat. Officer Bronco & Brad Pitch', u'life-span': {u'ended': None}, u'sort-name': u'Kit', u'score': u'27', u'type': u'Person', u'id': u'2b1895a9-6906-4700-b0ed-98561cb58474'}, {u'name': u'Kit', u'area': {u'sort-name': u'Bristol', u'id': u'40d758a4-b7c2-40f3-b439-5efbd2a3b038', u'name': u'Bristol'}, u'gender': u'male', u'disambiguation': u'Kit Fegradoe - UK ambient/electronic artist', u'life-span': {u'ended': None}, u'sort-name': u'Kit', u'score': u'27', u'type': u'Person', u'id': u'b199b386-e0b1-4137-9faa-c9bc09b1eda4'}, {u'name': u'Kit', u'area': {u'sort-name': u'A\xe7ores', u'id': u'c998ef9b-8656-45f3-ba70-8d8c15a33a29', u'name': u'A\xe7ores'}, u'gender': u'male', u'disambiguation': u'Jo\xe3o Martins, Azorean artist', u'life-span': {u'ended': True, u'end': u'2016-02'}, u'sort-name': u'Kit', u'score': u'27', u'type': u'Person', u'id': u'a710d032-28fd-4657-9ae7-3f2a7a53a94f'}, {u'name': u'KIT', u'disambiguation': u'George Chen, Vice Cooler', u'life-span': {u'ended': None, u'begin': u'2003'}, u'sort-name': u'KIT', u'score': u'26', u'type': u'Group', u'id': u'ede72177-00cd-4ddf-b04b-1b7c754fed79'}, {u'name': u'Ferry Aid', u'area': {u'sort-name': u'United Kingdom', u'id': u'8a754a16-0027-3a29-b6d7-2b40ea0481ed', u'name': u'United Kingdom'}, u'country': u'GB', u'life-span': {u'ended': True, u'begin': u'1987', u'end': u'1987'}, u'sort-name': u'Ferry Aid', u'score': u'20', u'type': u'Group', u'id': u'590233d0-5ab2-4a67-8f43-a647c2100bdc', u'aliases': [{u'name': u'Ferry Aid (Zeebrugge)', u'locale': None, u'end-date': None, u'primary': None, u'sort-name': u'Ferry Aid (Zeebrugge)', u'type': None, u'begin-date': None}]}, {u'sort-name': u'Quench Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'd74731bd-79aa-4452-876d-b25d5c78b0b2', u'name': u'Quench Aid'}, {u'sort-name': u'Hearin Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'd31ee795-51b3-4213-81ff-ea521f988d28', u'name': u'Hearin Aid'}, {u'name': u'Peter Aid', u'gender': u'male', u'life-span': {u'ended': None}, u'sort-name': u'Aid, Peter', u'score': u'19', u'type': u'Person', u'id': u'd8e4fd9f-0a1b-4dbe-9ea6-8352d885fd84'}, {u'sort-name': u'Kool Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'375093c9-b20a-4955-80d1-e84fbacf4a6b', u'name': u'Kool Aid'}, {u'name': u'Mint-Aid', u'area': {u'sort-name': u'Canada', u'id': u'71bbafaa-e825-3e15-8ca9-017dcad1748b', u'name': u'Canada'}, u'country': u'CA', u'life-span': {u'ended': True, u'begin': u'2004', u'end': u'2004'}, u'sort-name': u'Mint-Aid', u'score': u'19', u'begin-area': {u'sort-name': u'Vancouver', u'id': u'6ccc62d1-bdd8-4f08-8fae-bfaa5310e5ef', u'name': u'Vancouver'}, u'type': u'Group', u'id': u'd2559845-4898-458e-aacf-6392ef92dc19'}, {u'sort-name': u'Punk Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'7fe6ce13-78e4-4dc0-9820-aa2f4acd844a', u'name': u'Punk Aid'}]
+requesting http://musicbrainz.org/ws/2/artist/?query=artist%3AFirst+Aid+Kit&fmt=json
+25
+hello
+
+ARTIST:
+[{u'name': u'First Aid Kit', u'area': {u'sort-name': u'Spain', u'id': u'471c46a7-afc5-31c4-923c-d0444f5053a4', u'name': u'Spain'}, u'country': u'ES', u'disambiguation': u'Spanish indie electronic band', u'life-span': {u'ended': None, u'begin': u'2004'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Barcelona', u'id': u'12c3b82e-fcab-4219-9bd5-792089d8280e', u'name': u'Barcelona'}, u'type': u'Group', u'id': u'e4466078-fb0f-4899-98a2-7c7dfeb14714'}, {u'name': u'First Aid Kit', u'area': {u'sort-name': u'Sweden', u'id': u'23d10872-f5ae-3f0c-bf55-332788a16ecb', u'name': u'Sweden'}, u'country': u'SE', u'disambiguation': u'Swedish folk band', u'tags': [{u'count': 0, u'name': u'remember'}], u'life-span': {u'ended': None, u'begin': u'2007'}, u'sort-name': u'First Aid Kit', u'score': u'100', u'begin-area': {u'sort-name': u'Stockholm', u'id': u'1127ddc2-eab3-4662-8718-6adbdeea3b10', u'name': u'Stockholm'}, u'type': u'Group', u'id': u'373faa02-74d7-4b1d-9b47-7574ad510f8d'}, {u'name': u'FIRST AID', u'area': {u'sort-name': u'South Korea', u'id': u'b9f7d640-46e8-313e-b158-ded6d18593b3', u'name': u'South Korea'}, u'gender': u'male', u'disambiguation': u'Korean producer', u'life-span': {u'ended': None}, u'sort-name': u'FIRST AID', u'score': u'50', u'country': u'KR', u'type': u'Person', u'id': u'3266ea60-5690-464a-ae67-27c8681a9723', u'aliases': [{u'name': u'\uc5d0\uc774\ub4dc', u'locale': u'ko', u'end-date': None, u'primary': None, u'sort-name': u'\uc5d0\uc774\ub4dc', u'type': u'Artist name', u'begin-date': None}, {u'name': u'AID', u'locale': u'en', u'end-date': None, u'primary': None, u'sort-name': u'AID', u'type': u'Artist name', u'begin-date': None}]}, {u'name': u'First Aid', u'area': {u'sort-name': u'Russia', u'id': u'1f1fc3a4-9500-39b8-9f10-f0a465557eef', u'name': u'Russia'}, u'country': u'RU', u'disambiguation': u'Russian metal', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'48', u'type': u'Group', u'id': u'5bb6d8b6-dcd8-46e0-84dc-5a0d927c8475'}, {u'name': u'First Aid', u'area': {u'sort-name': u'Austria', u'id': u'caac77d1-a5c8-3e6e-8e27-90b44dcc1446', u'name': u'Austria'}, u'country': u'AT', u'disambiguation': u'Austrian Rockband', u'life-span': {u'ended': None, u'begin': u'2000'}, u'sort-name': u'First Aid', u'score': u'48', u'begin-area': {u'sort-name': u'Austria', u'id': u'caac77d1-a5c8-3e6e-8e27-90b44dcc1446', u'name': u'Austria'}, u'type': u'Group', u'id': u'268d84a6-620a-4a87-b467-d2236f9264b6'}, {u'name': u'First Aid', u'area': {u'sort-name': u'Estonia', u'id': u'e1c1215f-dcc0-35b4-b840-d2ca2151593b', u'name': u'Estonia'}, u'country': u'EE', u'disambiguation': u'Estonian band', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'48', u'type': u'Group', u'id': u'93d871dc-38f4-442e-8292-db7d670794ea'}, {u'name': u'First Aid', u'disambiguation': u'featured on \u201cStay the Night\u201d by Kuts & Mouse', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'48', u'id': u'3dae6add-712f-4592-8ece-da15d02ec943'}, {u'sort-name': u'First Aid 4 Souls', u'life-span': {u'ended': None}, u'score': u'39', u'id': u'612e0dcb-2b47-4feb-ad34-6259433de61d', u'name': u'First Aid 4 Souls'}, {u'name': u'The First Aid', u'life-span': {u'ended': None}, u'sort-name': u'First Aid, The', u'score': u'39', u'type': u'Group', u'id': u'c3eee377-bfd1-49fa-906c-7562db86a45d'}, {u'sort-name': u'DJ First Aid', u'life-span': {u'ended': None}, u'score': u'39', u'id': u'fbf39528-f7a1-491d-a5d4-94df61f88ad9', u'name': u'DJ First Aid'}, {u'name': u'First Aid', u'disambiguation': u'Germany', u'life-span': {u'ended': None}, u'sort-name': u'First Aid', u'score': u'35', u'id': u'97b182ff-5f86-451c-b2b4-27840b7d512a'}, {u'name': u'A\xedd', u'life-span': {u'ended': None, u'begin': u'1990'}, u'sort-name': u'A\xedd', u'score': u'31', u'type': u'Person', u'id': u'ae609ba9-5df4-4ef4-aa4a-18805397ef24'}, {u'sort-name': u'K.I.T.', u'life-span': {u'ended': None}, u'score': u'27', u'id': u'ed6459f1-257f-433a-85c1-970b2fbbc0af', u'name': u'K.I.T.'}, {u'name': u'KIT', u'area': {u'sort-name': u'France', u'id': u'08310658-51eb-3801-80de-5a0739207115', u'name': u'France'}, u'country': u'FR', u'disambiguation': u'Paris electro-pop trio', u'life-span': {u'ended': None}, u'sort-name': u'KIT', u'score': u'27', u'type': u'Group', u'id': u'2d1caf76-ccd5-4cbc-a1b0-c36186c81c15'}, {u'name': u'Kit', u'disambiguation': u'song "Piss die Wand an" feat. Officer Bronco & Brad Pitch', u'life-span': {u'ended': None}, u'sort-name': u'Kit', u'score': u'27', u'type': u'Person', u'id': u'2b1895a9-6906-4700-b0ed-98561cb58474'}, {u'name': u'Kit', u'area': {u'sort-name': u'Bristol', u'id': u'40d758a4-b7c2-40f3-b439-5efbd2a3b038', u'name': u'Bristol'}, u'gender': u'male', u'disambiguation': u'Kit Fegradoe - UK ambient/electronic artist', u'life-span': {u'ended': None}, u'sort-name': u'Kit', u'score': u'27', u'type': u'Person', u'id': u'b199b386-e0b1-4137-9faa-c9bc09b1eda4'}, {u'name': u'Kit', u'area': {u'sort-name': u'A\xe7ores', u'id': u'c998ef9b-8656-45f3-ba70-8d8c15a33a29', u'name': u'A\xe7ores'}, u'gender': u'male', u'disambiguation': u'Jo\xe3o Martins, Azorean artist', u'life-span': {u'ended': True, u'end': u'2016-02'}, u'sort-name': u'Kit', u'score': u'27', u'type': u'Person', u'id': u'a710d032-28fd-4657-9ae7-3f2a7a53a94f'}, {u'name': u'KIT', u'disambiguation': u'George Chen, Vice Cooler', u'life-span': {u'ended': None, u'begin': u'2003'}, u'sort-name': u'KIT', u'score': u'26', u'type': u'Group', u'id': u'ede72177-00cd-4ddf-b04b-1b7c754fed79'}, {u'name': u'Ferry Aid', u'area': {u'sort-name': u'United Kingdom', u'id': u'8a754a16-0027-3a29-b6d7-2b40ea0481ed', u'name': u'United Kingdom'}, u'country': u'GB', u'life-span': {u'ended': True, u'begin': u'1987', u'end': u'1987'}, u'sort-name': u'Ferry Aid', u'score': u'20', u'type': u'Group', u'id': u'590233d0-5ab2-4a67-8f43-a647c2100bdc', u'aliases': [{u'name': u'Ferry Aid (Zeebrugge)', u'locale': None, u'end-date': None, u'primary': None, u'sort-name': u'Ferry Aid (Zeebrugge)', u'type': None, u'begin-date': None}]}, {u'sort-name': u'Quench Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'd74731bd-79aa-4452-876d-b25d5c78b0b2', u'name': u'Quench Aid'}, {u'sort-name': u'Hearin Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'd31ee795-51b3-4213-81ff-ea521f988d28', u'name': u'Hearin Aid'}, {u'name': u'Peter Aid', u'gender': u'male', u'life-span': {u'ended': None}, u'sort-name': u'Aid, Peter', u'score': u'19', u'type': u'Person', u'id': u'd8e4fd9f-0a1b-4dbe-9ea6-8352d885fd84'}, {u'sort-name': u'Kool Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'375093c9-b20a-4955-80d1-e84fbacf4a6b', u'name': u'Kool Aid'}, {u'name': u'Mint-Aid', u'area': {u'sort-name': u'Canada', u'id': u'71bbafaa-e825-3e15-8ca9-017dcad1748b', u'name': u'Canada'}, u'country': u'CA', u'life-span': {u'ended': True, u'begin': u'2004', u'end': u'2004'}, u'sort-name': u'Mint-Aid', u'score': u'19', u'begin-area': {u'sort-name': u'Vancouver', u'id': u'6ccc62d1-bdd8-4f08-8fae-bfaa5310e5ef', u'name': u'Vancouver'}, u'type': u'Group', u'id': u'd2559845-4898-458e-aacf-6392ef92dc19'}, {u'sort-name': u'Punk Aid', u'life-span': {u'ended': None}, u'score': u'19', u'id': u'7fe6ce13-78e4-4dc0-9820-aa2f4acd844a', u'name': u'Punk Aid'}]
