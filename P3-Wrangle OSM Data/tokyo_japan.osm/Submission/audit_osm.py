@@ -6,11 +6,13 @@ Created on Fri Apr 21 10:23:57 2017
 """
 
 import codecs
-import xml.etree.cElementTree as ET
 import csv
-import data
-from langdetect import detect
 import pprint
+
+import xml.etree.cElementTree as ET
+from langdetect import detect
+
+import data
 
 OSM = 'tokyo_japan.xml'
 SAMPLE = 'tokyo_extract.xml'

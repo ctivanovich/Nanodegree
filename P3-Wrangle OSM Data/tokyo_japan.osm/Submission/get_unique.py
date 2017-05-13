@@ -5,8 +5,8 @@ Spyder Editor
 This is a temporary script file.
 """
 
-#import xml.etree.cElementTree as ET
 from audit_osm import get_element
+
 FILE = "tokyo_japan.xml"
 
 NODE_FIELDS = ['id', 'lat', 'lon', 'user', 'uid', 'version', 'changeset', 'timestamp']
@@ -21,8 +21,6 @@ def get_unique(file, fields):
         tags = element.findall('tag')
         for tag in tags:
             if "cuisine" in tag.attrib['k']:
-                print tag.attrib
-        
 #        
 #        for k,v in element.attrib.items():                   
 #            if k in fields:

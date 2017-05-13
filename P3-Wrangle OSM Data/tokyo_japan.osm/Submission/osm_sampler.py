@@ -6,8 +6,11 @@ Created on Thu Apr 20 18:51:14 2017
 """
 OSM_FILE = "tokyo_japan.xml"  # Replace this with your osm file
 SAMPLE_FILE = "tokyo_extract_k_10000.xml"
-import xml.etree.ElementTree as ET  # Use cElementTree or lxml if too slow
+
 import codecs
+
+import xml.etree.ElementTree as ET  # Use cElementTree or lxml if too slow
+
 
 k = 3000 # Parameter: take every k-th top level element
 
