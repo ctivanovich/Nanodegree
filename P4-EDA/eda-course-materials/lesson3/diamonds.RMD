@@ -79,17 +79,15 @@ diamondsByClarity <- diamonds %>% group_by(clarity) %>%
             n = n())
 ```
 ```{r bar plots for color and clarity}
-library(gridExtra)
 diamonds_by_clarity <- group_by(diamonds, clarity)
 diamonds_mp_by_clarity <- summarise(diamonds_by_clarity, mean_price = mean(price))
-p1 = ggplot(aes(x=clarity), y=mean_price, data=diamonds_mp_by_clarity) +
-  geom_bar()
-
+p1 = ggplot(aes(x=clarity, y=mean_price), data=diamonds_mp_by_clarity) +
+  geom_col()
 
 diamonds_by_color <- group_by(diamonds, color)
 diamonds_mp_by_color <- summarise(diamonds_by_color, mean_price = mean(price))
-p2 = ggplot(aes(x=color), y = mean_price, data=diamonds_by_color) +
-  geom_bar()
+p2 = ggplot(aes(x=color, y = mean_price),data=diamonds_mp_by_color) +
+  geom_col()
 grid.arrange(p1, p2)
 ```
 
