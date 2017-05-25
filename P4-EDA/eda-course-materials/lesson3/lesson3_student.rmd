@@ -1,23 +1,17 @@
 Lesson 3
 ========================================================
 
-***
-
-### What to Do First?
-Notes:
-
-***
-
 ### Pseudo-Facebook User Data
 Notes:
 
 ```{r Pseudo-Facebook User Data}
-setwd("C:/Users/Christopher/OneDrive/Nanodegree/P4-EDA/eda-course-materials/lesson3")
+library(ggplot2)
+
+setwd("C:/Users/Christopher/Desktop/Nanodegree/P4-EDA/eda-course-materials/lesson3")
 
 pfd <- read.csv("pseudo_facebook.tsv", sep = "\t")
 
 ```
-
 ***
 
 ### Histogram of Users' Birthdays
@@ -30,83 +24,30 @@ qplot(data = pfd, x = dob_day) +
 
 ***
 
-#### What are some things that you notice about this histogram?
-Response:
-
-***
-
-### Moira's Investigation
-Notes:
-
-***
-
-### Estimating Your Audience Size
-Notes:
-
-***
-
-#### Think about a time when you posted a specific message or shared a photo on Facebook. What was it?
-Response:
-
-#### How many of your friends do you think saw that post?
-Response:
-
-#### Think about what percent of your friends on Facebook see any posts or comments that you make in a month. What percent do you think that is?
-Response:
-
-***
-
-### Perceived Audience Size
-Notes:
-
-***
 ### Faceting
 Notes:
 
 ```{r Faceting}
-
+ggplot(data = pfd, aes(x = dob_day)) +
+  geom_histogram(binwidth = 1) +
+  scale_x_continuous(breaks = 1:31) +
+  facet_wrap(~dob_month)
 ```
-
-#### Let’s take another look at our plot. What stands out to you here?
-Response:
-
-***
-
-### Be Skeptical - Outliers and Anomalies
-Notes:
-
-***
-
-### Moira's Outlier
-Notes:
-#### Which case do you think applies to Moira’s outlier?
-Response:
-
-***
-
-### Friend Count
-Notes:
 
 #### What code would you enter to create a histogram of friend counts?
 
 ```{r Friend Count}
-
+qplot(data=pfd, x=friend_count)
 ```
-
-#### How is this plot similar to Moira's first plot?
-Response:
-
-***
 
 ### Limiting the Axes
 Notes:
 
 ```{r Limiting the Axes}
+qplot(data=pfd, x=friend_count, xlim = c(0,1200))
 
+qplot(data=pfd, x = friend_count) + scale_x_continuous(limits = c(0,1200))
 ```
-
-### Exploring with Bin Width
-Notes:
 
 ***
 
@@ -117,10 +58,15 @@ Notes:
 ```{r Faceting Friend Count}
 # What code would you add to create a facet the histogram by gender?
 # Add it to the code below.
-qplot(x = friend_count, data = pf, binwidth = 10) +
-  scale_x_continuous(limits = c(0, 1000),
-                     breaks = seq(0, 1000, 50))
+ggplot(aes(x = friend_count), data = pfd) +
+  geom_histogram(binwidth = 25) +
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) + facet_wrap(facets=~gender)
 ```
+```{r}
+qplot(x = friend_count, data = subset(pfd, !is.na(gender)), xlim=c(0,1000)) +
+  facet_wrap(~gender)
+```
+
 
 ***
 
@@ -128,7 +74,7 @@ qplot(x = friend_count, data = pf, binwidth = 10) +
 Notes:
 
 ```{r Omitting NA Values}
-
+qplot(data=na.omit(pfd), x=friend_count, xlim=c(0,1000))
 ```
 
 ***
@@ -137,17 +83,9 @@ Notes:
 Notes:
 
 ```{r Statistics \'by\' Gender}
-
+table(pfd$gender)
+by(pfd$friend_count, pfd$gender, summary)
 ```
-
-#### Who on average has more friends: men or women?
-Response:
-
-#### What's the difference between the median friend count for women and men?
-Response:
-
-#### Why would the median be a better measure than the mean?
-Response:
 
 ***
 
@@ -155,24 +93,8 @@ Response:
 Notes:
 
 ```{r Tenure}
-
-```
-
-***
-
-#### How would you create a histogram of tenure by year?
-
-```{r Tenure Histogram by Year}
-
-```
-
-***
-
-### Labeling Plots
-Notes:
-
-```{r Labeling Plots}
-
+ggplot(aes(x = tenure/365), data = pfd) +
+   geom_histogram(binwidth = .25, color = I('black'), fill = I('#099DD9')) +scale_x_continuous(breaks=seq(0,10,.5)) +xlab("Years using Facebook") + ylab("Number of Users in Sample")
 ```
 
 ***
@@ -181,33 +103,26 @@ Notes:
 Notes:
 
 ```{r User Ages}
-
+ggplot(data = pfd, aes(x=age)) + geom_histogram(binwidth=1, color = I('black'), fill = I('#099DD9')) +
+  scale_x_continuous(breaks=seq(0,130,10),limits = c(min(pfd$age),max(pfd$age))) + 
+  xlab("User Age")+ylab("Count")
+  
 ```
 
-#### What do you notice?
-Response:
-
-***
-
-### The Spread of Memes
-Notes:
-
-***
-
-### Lada's Money Bag Meme
-Notes:
-
-***
-
-### Transforming Data
-Notes:
-
-***
 
 ### Add a Scaling Layer
 Notes:
 
 ```{r Add a Scaling Layer}
+library(gridExtra)
+p1 = ggplot(data = pfd, aes(x=friend_count)) + geom_histogram() +
+ xlab("Friend Count")+ylab("Count")
+
+p2 = p1 + scale_x_log10() + xlab("Friend Count log10") + ylab("Count")
+
+p3 = p1 + scale_x_sqrt() + xlab("Sqrt Friend Count") + ylab("Count")
+
+p = grid.arrange(p1,p2,p3)
 
 ```
 
@@ -217,7 +132,11 @@ Notes:
 ### Frequency Polygons
 
 ```{r Frequency Polygons}
-
+ggplot(aes(x = friend_count, y = ..density../sum(..density..)), data = subset(pfd, !is.na(gender))) +
+  geom_freqpoly(aes(color = gender), binwidth=10) +
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) +
+  xlab('Friend Count') +
+  ylab('Percentage of users with that friend count')
 ```
 
 ***
@@ -226,7 +145,11 @@ Notes:
 Notes:
 
 ```{r Likes on the Web}
+ggplot(aes(x = www_likes, y = ..density../sum(..density..)), data = subset(pfd, !is.na(gender))) +
+  geom_freqpoly(aes(color = gender), binwidth=1) +
+  scale_x_log10() + xlab('Webpage Likes') + ylab('Percentage of users')
 
+by(pfd$www_likes, pfd$gender, sum)
 ```
 
 
@@ -236,42 +159,35 @@ Notes:
 Notes:
 
 ```{r Box Plots}
+ggplot(data=subset(pfd,!is.na(gender)), aes(x = gender, y = friend_count)) + geom_boxplot() + scale_y_continuous(limits = c(0, 1000))
+
 
 ```
 
 #### Adjust the code to focus on users who have friend counts between 0 and 1000.
 
 ```{r}
-
+ggplot(data=subset(pfd,!is.na(gender)), aes(x = gender, y = friend_count)) + geom_boxplot() + coord_cartesian(ylim = c(0, 1000))
 ```
-
+Using ylim or y_scale_continuous removes data points from box plot calculations; coord_cartesian does not.
 ***
 
-### Box Plots, Quartiles, and Friendships
-Notes:
-
-```{r Box Plots, Quartiles, and Friendships}
-
-```
-
-#### On average, who initiated more friendships in our sample: men or women?
-Response:
-#### Write about some ways that you can verify your answer.
-Response:
-```{r Friend Requests by Gender}
-
-```
-
-Response:
-
-***
 
 ### Getting Logical
 Notes:
 
 ```{r Getting Logical}
-
+mobile_check_in <- NA
+pfd$mobile_check_in <- pfd$mobile_likes > 0
+sum(pfd$mobile_check_in)/length(pfd$mobile_check_in)
 ```
+
+```{r Another Method}
+pfd$mobile_check_in <- ifelse(pfd$mobile_likes > 0, 1, 0)
+pfd$mobile_check_in <- factor(pfd$mobile_check_in)
+sum(pfd$mobile_check_in == 1)/length(pfd$mobile_check_in)
+```
+
 
 Response:
 
