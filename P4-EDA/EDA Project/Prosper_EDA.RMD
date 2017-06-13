@@ -1,0 +1,192 @@
+---
+title: "Exploration of Prosper Loan Data"
+author: "Christopher Ivanovich"
+date: "June 6, 2017"
+output: html_document
+---
+
+```{r set Global}
+knitr::opts_chunk$set(echo = F, warning = F, message = F, fig.width = 7, fig.align = "center", out.width = "80%")
+```
+
+```{r loading libraries and data}
+library(tidyverse)
+library(gridExtra)
+options(width = 120)
+
+setwd("c:/users/christopher/desktop/nanodegree/p4-eda/eda project")
+
+loans <- read.csv("prosperLoanData.csv", na.strings=c("",".","NA"))
+
+loans_sub <- loans[,c("ProsperScore","ProsperRating..Alpha.","BorrowerAPR", 
+                      "BorrowerRate", "LenderYield", "LoanStatus", "Occupation", 
+                      "EmploymentStatus","IsBorrowerHomeowner","IncomeRange", 
+                      "StatedMonthlyIncome","DebtToIncomeRatio", "MonthlyLoanPayment",  
+                      "LoanOriginalAmount", "AmountDelinquent",
+                      "AvailableBankcardCredit")]
+
+attach(loans_sub)
+```
+
+
+```{r Data Structure}
+str(loans_sub)
+```
+
+In this report, we are concerned with only a subset of the full Prosper Loans dataset, containing 113,937 observations and 16 variables chosen from the full set of 81. 
+
+Nota bene: Many fields in the source CSV file are missing values, and when importing the data-set into R Studio, I assign NA values to these empty fields. 
+
+
+# Univariate Plots! With Some Analysis!
+### Prosper's Assigned Borrower Scores
+
+```{r PropserScores Hist}
+qplot(data=loans_sub, x=ProsperScore, geom = "histogram")
+```
+
+### Debt to Income Ratio
+
+```{r DebtIncomeRatio}
+ggplot(data=loans_sub, aes(x=DebtToIncomeRatio)) + 
+  geom_histogram(binwidth=.01)
+```
+
+We note the huge clustering around a value of 0.50, as well as the distant outliers in which borrowers on Prosper apparently have 10.01-times as much debt as income--one wonders what their Prosper scores are, and how many investors they could get with such a scary ratio of debt to income...
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+summary(loans_sub[which(loans_sub$DebtToIncomeRatio==10.01),])
+```
+
+Quite a surprising amount of variation in this group of `{r echo=FALSE, message=FALSE, warning=FALSE} nrow(loans_sub[which(loans_sub$DebtToIncomeRatio>=10.01),])` borrowers. Apparently Prosper is willing to assign decent scores to people in this group, perhaps weighting income and homeownership more heavily than debt-to-income ratio.
+ 
+In our Debt:Income histogram, the vast majority of the data is clustered within a very narrow range, <= 0.8 it looks like, so we cut out the extreme outliers by setting reasonable limits of 0.1 and 1.0:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data=loans_sub, aes(x=DebtToIncomeRatio)) + 
+  geom_histogram(binwidth=.01) +
+  coord_cartesian(xlim=c(0.1, 1.0))
+```
+
+Here we see a normal, positively-skewed distribution. Our earlier summary data for DebtToIncomeRatio tells us that the mean value is 0.276.
+
+A quick call to the ```table``` function, to take a look at the income ranges of those with such extreme debt-burdens, reveals:
+
+```{r echo=F, message=F, warning=F}
+sort(table(subset(loans_sub, DebtToIncomeRatio>10)$IncomeRange),decreasing = T)
+```
+
+These results scuttle my pet theory that a significant number of these highly indebted individuals are upper-class individuals using Prosper as a source of speculative capital.
+
+### Income Range
+
+For our next plot, we look at Income Range:
+```{r echo=F, message=F, warning=F}
+ggplot(data=loans_sub, aes(x=IncomeRange)) + 
+  geom_bar(fill="grey")
+```
+
+This barchart looks wonderfully normal as well, though the granularity of such wide intervals is probably quite low.
+
+
+Next, we look at Borrower Rate, which is the interest rate assigned to the borrower by Prosper:
+
+```{r echo=F, message=F, warning=F}
+ggplot(data=loans_sub) + 
+  geom_histogram(aes(x=BorrowerRate), binwidth=.01) + 
+  xlim(c(0.0, 0.4))
+```
+
+These are percentage-rates, and we see a nearly normal distribution with an interesting secondary peak around 32% interest, which is quite a high rate. This makes me wonder what the Prosper scores are for these borrowers, that so many of them (about 6,000) would be dealt such a punishing interest rate.
+
+How many borrowers are in this rate bracket, and what do their other variables look like? We subset for borrowers with rates in the open interval of (0.31, 0.32), which contains 7427 loan data entries, and we take a summary of a selection of variables:
+```{r echo=F, message=F, warning=F}
+poor_saps <- subset(loans_sub, BorrowerRate >= 0.31 & BorrowerRate <=0.32)
+summary(poor_saps[c("ProsperRating..Alpha.", "StatedMonthlyIncome", "BorrowerRate", "LenderYield", "LoanStatus")])
+```
+
+As we see, most of these people have the worst possible Prosper Rating of "HR", i.e. high-risk, with on average higher debt:income ratios, but a surprisingly high monthly income mean and median. We note that the max stated income value in our subset matches that in the summary of the full dataset, and clearly this high-earner is distorting the mean. Yet, the median monthly income remains solidly high, even for this HR subset. 
+
+Let's take a look at the distribution of monthly incomes, with the outlier removed, to see if anything else emerges.
+
+```{r echo=F, warning=F, message=F}
+ggplot(data=loans_sub) + geom_histogram(aes(x=StatedMonthlyIncome), binwidth=1000) +
+  xlim(c(0, 35000))
+```
+
+It looks like the bulk of the borrowers here inhabit the American middle-class income range, and now the intervals chosen by the data curator in the IncomeRange variable make more sense. 
+
+We could log10 transform our counts to flatten the peaks a bit and better visualize the right tail of this positively skewed distribution, but no good reason to do so comes to mind just yet. Given the non-trivial amounts of high-earners here, though, one wonders what their occupations and other indicators of wealth and financial activity might look like. Are people, for instance, using Prosper loans as a cash source for speculation or other kinds of income-reaping investments? The practice of house-flipping among middle and upper middle class workers comes to mind, though this is most likely not a question I could answer definitively with this data set. 
+
+
+### Assigning Loan Risk: Prosper Ratings versus Prosper Scores
+
+Let's take a look at the letter-score Prosper uses to rate the risk of a particular loan to a particular lender, alongside the numerical score.
+```{r echo=F, warning=F, message=F}
+
+ggplot(data=loans_sub) +
+  geom_histogram(aes(x=ProsperScore), stat="count") +
+  facet_wrap(~ ProsperRating..Alpha.)
+```
+
+At first glance, this appears quite strange. Why is there so much divergence between the two scoring methods? Prosper is pretty mum on the definition of the Rating (AA-HR), beyond calling it a proprietary scoring method for evaluating risk, with AA being the best, HR being the worst. I guess we're just supposed to trust their secret recipe for risk evaluation? 
+
+Prosper Scores (not to be confused with Prosper's (Numeric) Ratings) are also defined as a risk-measuring tool in the range of 1-11, with 11 being the safest likely investment, and 1 being the least safe. Similarly, it seems we're supposed to take them at the word, but that's hard to do when this one company has seemingly divergent means of representing risk for the same set of loans. 
+
+If these methods have any kind of parity, we would expect a very high density of 10-11 Scores ot be in the "AA" rating graph above, and we'd only expect to see scores of 1-2 or so under the "HR" facet of our graph.
+
+The power of the ```table``` function allows us to quickly tabulate the frequencies of ProsperScore vs. ProsperRating:
+
+```{r echo=F, warning=F, message=F}
+table(ProsperScore, ProsperRating..Alpha.)
+```
+
+We see that there does appear to be some consistency in the frequencies between these two methods, but that the relationship appears weaker than we might hope or expect. That is, apart from the large spread of the data, the modal letter Ratings appear to correspond to particular numerical Scores, but we see some oddities: 10-11 peak at AA, 9 peaks at A and 8 peaks at B, which is fine, but 6 peaks at D while 4-5 peak at C. 
+
+This divergence tells us that there are some significant differences in how risk gets assigned using these two different "proprietary" representations. 
+
+
+## Multivariate Plots, Grouping, and Analysis!
+```{r Interest Types over Rating}
+ggplot(data=subset(loans_sub, !is.na(ProsperRating..Alpha.)), 
+                   aes(x=BorrowerRate, y=BorrowerAPR)) +
+  geom_smooth(aes(color=ProsperRating..Alpha.))
+```
+
+Why have I plotted a borrower's APR against the interest rate on their loan? Simply to confirm that Prosper is using a consistent, flat method for servicing loans (unlike an interest rate, an APR includes things like service and transaction fees, AKA Prosper's share of the pie). 
+
+We do however note some off-trend points, but they are few in number. We can facet these plots to get a clearer look at the Ratings in which the two rates diverge a bit.
+
+```{r echo=F, warning=F, message=F}
+ggplot(data=subset(loans_sub, !is.na(ProsperRating..Alpha.)), 
+                   aes(x=BorrowerRate, y=BorrowerAPR)) +
+  geom_smooth() +
+  geom_point(alpha=1/100, color = "red") +
+  facet_wrap(~ProsperRating..Alpha.)
+```
+
+Without surprise we note that well-rated loans enjoy generally lower interest rates, though there is quite a wide range of borrowing rates within Prosper ratings. Is there a graduated interest rate related to the size of the loan? We shelve that question for a moment, to be pursued with our next plot--for now, we note that there are different APRs assigned to the same borrower interest rates even within Rating categories. What's that about?
+
+For the most part, these varying APRs seem to be range discretely, i.e., there are simply categories of APR, which we infer by the fact that each facet graph seems to be composed of four or five distinct linear trends, representing the relationship between APR and loan interest rate.
+
+We can further decompose this distinction to see how it varies by creating a new variable, in which we represent the ratio between APR and interest rate.
+
+```{r}
+loans_sub$APR_to_Interest_Rate <- loans_sub$BorrowerAPR / loans_sub$BorrowerRate
+
+ggplot(data=loans_sub,aes(x=APR_to_Interest_Rate)) +
+  geom_histogram(bins=100) + 
+  xlim(c(1, 2))
+```
+
+Okay, what is this madness? Why do we see so much variation, one might even say normally distributed variation, including some painfully large APRs? 
+
+We may be entering dark, secretive territory here--the realm of how Prosper has gotten so prosperous, as a company valued at more than $2 billion USD, with a multibillion-dollar deal in the works with the likes of George Soros.
+
+But, these interest rate discrepancies point us towards other, more immediate questions--ones we are better positioned to explore, and which may shed light on what kinds of borrowers can expect larger APRs, on the size and repayment of loans in relation to markers of financial health, and so on. Let's dig in.
+
+
+## Grouping by Income Range for summary stats
+```{r}
+by_income_table <- group_by(loans_sub, IncomeRange)
+```

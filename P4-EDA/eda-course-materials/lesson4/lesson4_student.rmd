@@ -1,5 +1,6 @@
 Lesson 4 ======================================================== 
 ```{r Pseudo-Facebook User Data} 
+knitr::opts_chunk$set(echo = T, fig.width = 7, fig.align = "center", out.width = "80%")
 library(ggplot2) 
 library(dplyr, tidyr)
 
@@ -74,15 +75,21 @@ point out that sqrt is being passed negative numbers, but it doesn't. ***
 
 ### Alpha and Jitter Notes:
 
-```{r Alpha and Jitter} ggplot(aes(x = age, y = friend_count), data = pfd) + 
+```{r Alpha and Jitter}
+ggplot(aes(x = age, y = friend_count), data = pfd) + 
 geom_jitter(position=position_jitter(h=0), alpha=1/20) + xlim(c(13,90)) + 
-coord_trans(y="sqrt") ```
+coord_trans(y="sqrt")
+```
 
-*** ```{r Friends_initiated versus Age} ggplot(aes(x= age,
-y=friendships_initiated), data=pfd) + geom_point(alpha=1/20,
-position=position_jitter(h=0)) + xlim(c(13,90)) + coord_trans(y='sqrt')
+*** 
 
-``` ### Overplotting and Domain Knowledge Notes:
+```{r Friends_initiated versus Age}
+ggplot(aes(x= age, y=friendships_initiated), data=pfd) + 
+  geom_point(alpha=1/20, position=position_jitter(h=0)) + 
+  xlim(c(13,90)) + coord_trans(y='sqrt')
+``` 
+
+### Overplotting and Domain Knowledge Notes:
 
 ***
 
@@ -169,7 +176,8 @@ places. Response:
 
 ```{r}
 ggplot(data=pfd, aes(x=www_likes_received, y=likes_received)) +
-  geom_point() + xlim(0, quantile(pfd$likes_received, 0.95)) +
+  geom_point() + 
+  xlim(0, quantile(pfd$likes_received, 0.95)) +
   ylim(0, quantile(pfd$www_likes_received, 0.95)) +
   geom_smooth(method = 'lm', color = 'red')
 ```
@@ -258,7 +266,7 @@ head(pfd$age_with_months,10)
 ### Age with Months Means
 
 ```{r Age with Months Means}
-pfd.fc_by_age_months = pfd %>%
+pfd.fc_by_age_months <-  pfd %>%
   group_by(age_with_months) %>%
   summarize(friend_count_mean = mean(friend_count),
             friend_count_median= median(friend_count),

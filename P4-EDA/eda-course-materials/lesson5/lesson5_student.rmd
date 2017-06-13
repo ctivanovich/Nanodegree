@@ -1,5 +1,13 @@
 Lesson 5
 ========================================================
+```{r Setup}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+setwd("C:/Users/Christopher/Desktop/Nanodegree/P4-EDA/eda-course-materials")
+
+pf <- read.csv("pseudo_facebook.tsv", header = T, sep = "\t")
+```
 
 ### Multivariate Data
 Notes:
@@ -16,7 +24,13 @@ Notes:
 
 ```{r Third Qualitative Variable}
 ggplot(aes(x = gender, y = age),
-       data = subset(pf, !is.na(gender))) + geom_histogram()
+       data = subset(pf, !is.na(gender))) + 
+  geom_boxplot() + stat_summary(fun.y = mean, geom = 'point', shape=4)
+
+ggplot(aes(x = age, y = friend_count),
+       data = subset(pf, !is.na(gender))) + 
+  geom_line(aes(color=gender), stat = "summary", fun.y = median)
+
 ```
 
 ***
@@ -25,7 +39,14 @@ ggplot(aes(x = gender, y = age),
 Notes:
 
 ```{r Plotting Conditional Summaries}
+pf.fc_by_age_gender <- group_by(pf, age, gender) %>% 
+  summarize(mean_friend_count = mean(friend_count), 
+            median_friend_count = median(friend_count),
+            n = n())
 
+ggplot(aes(x = age, y = median_friend_count),
+       data = subset(pf.fc_by_age_gender, !is.na(gender))) + 
+  geom_line(aes(color=gender))
 ```
 
 ***
@@ -37,15 +58,29 @@ Notes:
 
 ### Wide and Long Format
 Notes:
-
+If long includes repeated and discrete variables like age or gender, it is useful at times to create new dfs that aggregate these data with calculated parameters like median or mean. Categorical variables like gender are simply counted up in the wide format.
 ***
 
 ### Reshaping Data
 Notes:
 
-```{r}
-install.packages('reshape2')
+```{r Reshpaing with reshape2}
 library(reshape2)
+
+pf.fc_by_age_gender.wide <- dcast(data = pf.fc_by_age_gender, 
+                                  age ~ gender,
+                                  value.var = "median_friend_count")
+pf.fc_by_age_gender.wide$ratio <- 
+  pf.fc_by_age_gender.wide$male/pf.fc_by_age_gender.wide$female
+```
+
+
+```{r Reshaping with Tidyr and dplyr}
+pf.fc_by_age_gender.wide <- subset(
+  pf.fc_by_age_gender[c('age', 'gender', 'median_friend_count')], 
+  !is.na(gender)) %>% 
+  spread(gender, median_friend_count) %>% 
+  mutate(ratio = male / female)
 ```
 
 
@@ -53,9 +88,15 @@ library(reshape2)
 
 ### Ratio Plot
 Notes:
+The linetype parameter can take the values 0-6:
+0 = blank, 1 = solid, 2 = dashed
+3 = dotted, 4 = dotdash, 5 = longdash
+6 = twodash
 
 ```{r Ratio Plot}
-
+ggplot(data = pf.fc_by_age_gender.wide, aes(x=age, y=female/male)) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = 2, alpha=0.5)
 ```
 
 ***
@@ -64,16 +105,18 @@ Notes:
 Notes:
 
 ```{r Third Quantitative Variable}
-
+pf$year_joined <- floor(2014-pf$tenure/365)
 ```
 
 ***
 
 ### Cut a Variable
-Notes:
+Notes: Pretty pandas-like
 
 ```{r Cut a Variable}
+pf$year_joined.bucket <- cut(pf$year_joined, c(2004, 2009, 2011, 2012, 2014), labels = c("2004-2009", "2009-2011", "2011-2012", "2012-2014"))
 
+table(pf$year_joined.bucket, useNA = "ifany")
 ```
 
 ***
@@ -82,7 +125,10 @@ Notes:
 Notes:
 
 ```{r Plotting it All Together}
-
+ggplot(data = subset(pf, !is.na(gender)), 
+       aes(x=age, y=friend_count)) +
+  geom_line(aes(color=year_joined.bucket), stat="summary",
+            fun.y=median)
 ```
 
 ***
@@ -91,7 +137,11 @@ Notes:
 Notes:
 
 ```{r Plot the Grand Mean}
-
+ggplot(data = subset(pf, !is.na(gender) | !is.na(year_joined.bucket)), 
+       aes(x=age, y=friend_count)) +
+  geom_line(aes(color=year_joined.bucket), stat="summary",
+            fun.y=mean) +
+  geom_line(stat="summary", fun.y=mean, linetype = 2)
 ```
 
 ***
@@ -100,7 +150,7 @@ Notes:
 Notes:
 
 ```{r Friending Rate}
-
+with(subset(pf, tenure >0), summary(friend_count/tenure))
 ```
 
 ***
@@ -113,7 +163,10 @@ What is the median friend rate?
 What is the maximum friend rate?
 
 ```{r Friendships Initiated}
-
+ggplot(data=subset(pf, tenure > 0), 
+       aes(x = tenure, 
+           y = friendships_initiated/tenure)) + geom_line(aes(color=year_joined.bucket), stat="summary", fun.y=mean) +
+  geom_smooth()
 ```
 
 ***
@@ -165,7 +218,10 @@ Notes:
 Notes:
 
 ```{r Histograms Revisited}
-
+yo <- read.csv("yogurt.csv", header = T)
+yo$id <- factor(yo$id)
+str(yo)
+ggplot(data=yo, aes(x=price)) + geom_histogram(fill= "blue")
 ```
 
 ***
@@ -174,7 +230,7 @@ Notes:
 Notes:
 
 ```{r Number of Purchases}
-
+yo <- transform(yo, all.purchases = strawberry + blueberry + pina.colada + plain + mixed.berry)
 ```
 
 ***
@@ -183,26 +239,45 @@ Notes:
 Notes:
 
 ```{r Prices over Time}
-
+ggplot(data=yo, aes(x=time, y=price)) +
+  geom_jitter(alpha=.25, shape = 21, fill="blue")
 ```
 
 ***
 
 ### Sampling Observations
 Notes:
-
+With so many repeat measurements it is useful to take a random subset of the data (in this case purchases for a household), to be able to more closely examine variation across data points (households).
 ***
 
 ### Looking at Samples of Households
 
 ```{r Looking at Sample of Households}
+set.seed(4230)
+samp.ids <- sample(levels(yo$id), 16)
 
+ggplot(data=subset(yo, id %in% samp.ids), 
+       aes(x=time, y=price)) + 
+  facet_wrap(~id) +
+  geom_line() +
+  geom_point(aes(size = all.purchases), pch=1)
+```
+
+```{r Another sampling}
+set.seed(201)
+
+samp.ids <- sample(levels(yo$id), 16)
+
+ggplot(data=subset(yo, id %in% samp.ids), aes(x=time)) +
+  facet_wrap(~id) +
+  geom_point(aes(y=strawberry), color="red") +
+  geom_point(aes(y=blueberry), color="blue")
 ```
 
 ***
 
 ### The Limits of Cross Sectional Data
-Notes:
+Notes: As in the pf data, we have no time-series data, making it "cross sectional", or a snapshot of a larger data generating process. We can't make across-time comparisons.
 
 ***
 
@@ -213,6 +288,17 @@ Notes:
 
 ### Scatterplot Matrix
 Notes:
+
+```{r}
+library(GGally)
+theme_set(theme_minimal(20))
+
+set.seed(1836)
+pf.subset <- pf[,c(2:15)]
+names(pf.subset)
+ggpairs(pf.subset[sample.int(nrow(pf.subset),1000), ])
+```
+
 
 ***
 
