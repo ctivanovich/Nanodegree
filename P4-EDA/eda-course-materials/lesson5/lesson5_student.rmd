@@ -39,8 +39,8 @@ ggplot(aes(x = age, y = friend_count),
 Notes:
 
 ```{r Plotting Conditional Summaries}
-pf.fc_by_age_gender <- group_by(pf, age, gender) %>% 
-  summarize(mean_friend_count = mean(friend_count), 
+pf.fc_by_age_gender <- dplyr::group_by(pf, age, gender) %>% 
+  dplyr::summarize(mean_friend_count = mean(friend_count), 
             median_friend_count = median(friend_count),
             n = n())
 
