@@ -3,12 +3,31 @@ title: "Exploration of Prosper Loan Data"
 author: "Christopher Ivanovich"
 date: "June 6, 2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
+<style type="text/css">
+
+body, td {
+   font-size: 16px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = F, warning = F, message = F, fig.width = 7, fig.align = "center", out.width = "80%", fig.height = 6)
+knitr::opts_chunk$set(echo = F, 
+                      warning = F, 
+                      message = F, 
+                      fig.width = 7, 
+                      fig.align = "center", 
+                      out.width = "80%", 
+                      fig.height = 6)
 ```
 
 ```{r loading libraries and data}
@@ -17,21 +36,35 @@ library(gridExtra)
 library(choroplethr)
 library(data.table)
 library(GGally)
-
-options(width = 120)
+library(car)
 
 setwd("c:/users/christopher/desktop/nanodegree/p4-eda/eda project")
 
-loans <- read.csv("prosperLoanData.csv", na.strings=c("",".","NA"))
+variables = c("ProsperScore", 
+              "ProsperRating..Alpha.", 
+              "BorrowerAPR", 
+              "BorrowerRate", 
+              "LenderYield", 
+              "IsBorrowerHomeowner",
+              "IncomeRange", 
+              "StatedMonthlyIncome", 
+              "DebtToIncomeRatio", 
+              "MonthlyLoanPayment", 
+              "LoanOriginalAmount", 
+              "AmountDelinquent", 
+              "BorrowerState",
+              "LoanStatus",
+              "CreditScoreRangeUpper",
+              "CreditScoreRangeLower")
 
-loans_sub <- loans[,c("ProsperScore","ProsperRating..Alpha.","BorrowerAPR", 
-                      "BorrowerRate", "LenderYield", "IsBorrowerHomeowner","IncomeRange", 
-                      "StatedMonthlyIncome","DebtToIncomeRatio", "MonthlyLoanPayment",  
-                      "LoanOriginalAmount", "AmountDelinquent", "BorrowerState",
-                      "ProsperPrincipalOutstanding", "LoanStatus")]
-loans_sub$AverageCredit <- (loans$CreditScoreRangeUpper + loans$CreditScoreRangeLower)/2
+loans <- read.csv("prosperLoanData.csv", na.strings=c("",".","NA"))[variables]
 
-attach(loans_sub)
+loans$AverageCredit <- round((loans$CreditScoreRangeUpper + 
+                              loans$CreditScoreRangeLower)/2)
+
+loans <- loans[-15:-16]
+
+attach(loans)
 ```
 
 
@@ -40,147 +73,198 @@ In this report, we are concerned with a dataset from the Prosper microlending pl
 This dataset contains 113,937 observations and (initially) 15 variables chosen from the full set of 81. One of these variables, AverageCredit, has been created by averaging the Upper and Lower Credit Score variables.
 
 ```{r Data Structure}
-str(loans_sub)
-summary(loans_sub)
+str(loans)
+summary(loans)
 ```
 Nota bene: Many fields in the source CSV file are missing values. When importing the data-set into R Studio, I assign NA values to these empty fields. 
 
 ## A First Question: Where Are the Borrowers?
 ```{r}
 #we make a data.table for easy joining with the state data set
-state_totals <- data.table(group_by(loans_sub, BorrowerState) %>% 
+state_totals <- data.table(group_by(loans, BorrowerState) %>% 
                                 dplyr::summarize(n()))
 
-state_totals <- state_totals[!is.na(state_totals$BorrowerState),] #removing the NA row
-state_totals <- state_totals[-8,] #removing DC, which is too difficult to convert
+state_totals <- state_totals[!is.na(state_totals$BorrowerState),] 
+#removing the NA row
 
-# joining a state name column on a common name for the abb column
+state_totals <- state_totals[-8,] 
+#removing DC, which is too difficult to convert
+
 names(state_totals)[1:2] <- c("state.abb","value")
+# joining a state name column on a common name for the abb column
+
 state_totals <- inner_join(state_totals, data.table(state.name, state.abb))
 names(state_totals)[3] <- c("region")
 state_totals$region <- tolower(state_totals$region)
 
 #Make the map
-state_choropleth(state_totals, title = "Number of Loans per State (Borrower-Reported)", legend = "Number of Loans", num_colors = 1)
+state_choropleth(state_totals, 
+                 title = "Number of Loans per State (Borrower-Reported)", 
+                 legend = "Number of Loans", num_colors = 1)
 
-#because the chloroplethr package masks dplyr, we unload it to avoid conflicts later
-#we also drop data.table just 'cuz
+#because the chloroplethr package masks dplyr, we unload it
+
 unloadNamespace(choroplethr)
-unloadNamespace(data.table)
 ```
 
 Clearly, California leads the way, at least among this set of borrowers for which state values were listed. This may have something to do with Prosper's popularity among the Silicon Valley set as a microlending platform, since it is rooted in the startup culture of that place, or it may have more to do with state populations, as other stand-out states include Texas, Illinois, and New York. 
 
-### Distribution of Original Loans
+### Distribution of Original Loans by State
 Let's also consider the distribution of loans across the full set of states (this time including DC):
 
 ```{r}
-par(las=2, mar = c(10, 4, 2, 2), cex.axis = 0.8)
-boxplot(LoanOriginalAmount ~ BorrowerState, loans_sub, range=0, ylab =
+par(las=2, mar = c(8, 4, 2, 2), cex.axis = 0.8)
+boxplot(LoanOriginalAmount ~ BorrowerState, loans, range=0, ylab =
           "Loan Original Amounts")
 
 #Code adapted from an example in Roger Peng's "The Art of Data Science", pg. 48.
 ```
 
-There were many empty values for borrowers' states of residency, which somewhat boggles the mind--I can't imagine one could take out a loan from Prosper without providing at least this modicum of location data.
+There were many empty values for borrowers' states of residency, which somewhat surprises--it is hard to imagine one could take out a loan from Prosper without providing at least this modicum of location data.
 
-This begs the question, how riddled with NAs is this dataset? How do NA-values vary across the different fields of the data set? Let's find out!
+This begs the question, how do NA-values vary across the different fields of the data set? Let's find out!
 
 ```{r}
-na_count <-sapply(loans_sub, function(y) sum(length(which(is.na(y)))))
+na_count <-sapply(loans, function(y) sum(length(which(is.na(y)))))
 
-data.frame(round(na_count/nrow(loans_sub), 4))
+na_counts <- data.frame(round(na_count/nrow(loans), 4))
+
+names(na_counts)[1] <- "Percent of Loans Missing Value"
+na_counts
 #NA counting lambda code courtesty of Stack Overflow: 
-# https://stackoverflow.com/questions/24027605/determine-the-number-of-na-values-in-a-column
+# https://stackoverflow.com/questions/24027605/
+# determine-the-number-of-na-values-in-a-column
 ```
 
-These values are proportions of the total number of observations, and we see that the ProsperPrincipalOutstanding field is missing for 80% of the entries. I suspect this may reflect loans now fully paid-off or otherwise written-off.
+These values are proportions of the total number of observations, and we note the large proportion of entries missing Prosper Scores and Ratings. 
 
-## Univariate Plots with Analysis
+These values are key, public-facing predictors of the riskiness of a loan--their absence from this dataset may be suggestive of cherry-picking or tampering with the data to foil just such an analysis as this one (I emphasize that this is only a off-the-cuff hypothesis, but it is worth considering, given how central these values are for lenders on the platform, as it is the only metric lenders can see that is not voluntary and unverified).
 
-### Average Credit Scores
+## Univariate Plots 
 
-```{r}
-ggplot(data=loans_sub, aes(x=AverageCredit)) + 
-  geom_histogram() 
-```
-
-As far as FICO (the most common type) scores go, the current range of possible scores is 350-800. That alone tells us that the outliers on the left, equal to 9.5, make no sense. So, we remove them, and set the limits that we know to be permissible.
+### Monthly Loan Payments
 
 ```{r}
-delinquency_types <- levels(loans_sub$LoanStatus)[c(5, 7:12)]
-late_or_defaulted_loans <- filter(loans_sub, LoanStatus %in% delinquency_types)
-
-ggplot(data=subset(late_or_defaulted_loans, AverageCredit > 10), aes(x=AverageCredit)) + 
-  geom_line() 
+ggplot(data = loans, aes(x=MonthlyLoanPayment)) +
+  geom_histogram(binwidth = 25) + xlim(0, 1500)
 ```
 
 ### Prosper's Assigned Borrower Scores and Ratings
 ```{r PropserScores Hist}
-q1 <- qplot(data=loans_sub, x=ProsperScore, geom = "bar")
-q2 <- qplot(data=loans_sub, x=ProsperRating..Alpha., geom="bar")
+q1 <- qplot(data=loans, x=ProsperScore, geom = "bar")
+q2 <- qplot(data=subset(loans, !is.na(ProsperRating..Alpha.)), 
+            x=ProsperRating..Alpha., geom="bar")
 grid.arrange(q1, q2, ncol=1)
 ```
+
+
+## Further Univariate Plots with Some Analysis
+
+### Average Credit Scores
+
+```{r}
+ggplot(data=loans, aes(x=AverageCredit)) + 
+  geom_histogram()
+```
+
+As far as FICO (the most common type of) scores go, the current range of possible scores is 300-850. That alone tells us that the values outside this range are likely in error. So, we remove them by setting the limits that we know to be feasible.
+
+### Average Credit for Loans in Delinquency
+```{r}
+delinquency_types <- levels(loans$LoanStatus)[c(5, 7:12)]
+late_or_defaulted_loans <- filter(loans, LoanStatus %in% delinquency_types)
+
+ggplot(data=late_or_defaulted_loans, aes(x=AverageCredit)) + 
+  geom_density(color="red") +
+  xlim(300, 850)
+```
+This density graph is limited to only those loans that are in some sort of delinquency, which in the data set are labelled as one of the following:
+```
+"Defaulted", "Past Due (>120 days)", "Past Due (1-15 days)", "Past Due (16-30 days)", 
+"Past Due (31-60 days)", "Past Due (61-90 days)", "Past Due (91-120 days)"
+```
+Compared to the full set of Credit scores, we see much more activity at the lower ends, unsurprisingly.
+
+### Loan Statuses
+```{r}
+ggplot(data=loans, aes(x=LoanStatus)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+In the density chart above, you may have noticed the extremely small range of 0.000 to 0.006, which is the proportion of delinquent loans by credit score for the whole dataset. 
+
+Following up on that here, we see very few loans that are actually past due in this data set. Wikipedia informs me that "Chargedoff" means a creditor has written off the loan as unlikely to be paid (usually after 6 months of non-payment), so there is something incongruous about having 17,000 loans (about 14% of all loans) or so charged off or defaulted, and an almost total lack of Past Due loans--one would think becoming Past Due is a necessary first step to defaulting on a loan or having it charged off, so there should be a larger proportion of past due loans here.
+
+Given how few "past due" loans there are, we will remove them from future plots involving Loan Status.
+
 
 ### Debt to Income Ratio
 
 ```{r DebtIncomeRatio}
-ggplot(data=loans_sub, aes(x=DebtToIncomeRatio)) + 
+ggplot(data=loans, aes(x=DebtToIncomeRatio)) + 
   geom_histogram(binwidth=.01)
 ```
 
 We note the mode around a value of 0.50, as well as the distant outliers in which borrowers on Prosper apparently have 10.01-times as much debt as income--one wonders what their Prosper scores are, and how many investors they could get with such a scary ratio of debt to income...
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-summary(loans_sub[which(loans_sub$DebtToIncomeRatio==10.01),]
-        [,c("ProsperScore","ProsperRating..Alpha.", "IncomeRange", 
-                      "StatedMonthlyIncome","DebtToIncomeRatio", "MonthlyLoanPayment",  
-                      "LoanOriginalAmount")])
+summary(loans[which(loans$DebtToIncomeRatio==10.01),]
+        [,c("ProsperScore",
+            "AverageCredit",
+            "ProsperRating..Alpha.", 
+            "IncomeRange", 
+            "StatedMonthlyIncome", 
+            "DebtToIncomeRatio", 
+            "MonthlyLoanPayment", 
+            "LoanOriginalAmount")])
 ```
 
 Quite a surprising amount of variation in this group of 
 ```{r} 
-nrow(loans_sub[which(loans_sub$DebtToIncomeRatio>=10.01),])
+nrow(loans[which(loans$DebtToIncomeRatio>=10.01),])
 ```
 
-loans. Apparently Prosper is willing to assign decent scores to people in this group, perhaps weighting income and homeownership more heavily than debt-to-income ratio.
+loans. Given the lack of intermediate debt:income ratios, and this variation, it is possible that these extreme outliers are entry errors of some sort, but if so, they are not few in number.
+
+We note that the maximum loan in this set is $25,000, which falls short of the largest loans offered by Prosper ($35,000).
 
 A quick call to the ```table``` function, to take a look at the income ranges of those with such extreme debt-burdens, reveals:
 
 ```{r echo=F, message=F, warning=F}
-sort(table(subset(loans_sub, DebtToIncomeRatio>10)$IncomeRange),decreasing = T)
+sort(table(subset(loans, DebtToIncomeRatio>10)$IncomeRange),decreasing = T)
 ```
 
-These results likely scuttle my pet theory that a significant number of these highly indebted individuals are upper-class individuals using Prosper as a source of speculative capital. It looks like the majority are quite low-income, or else lying about their income, as so many have reported zero income. The mean stated income is only ~$133 USD per month. 
+These results likely scuttle a pet theory I had that a significant number of these highly indebted people are upper-class individuals using Prosper as a source of speculative capital. It looks like the majority are quite low-income, or else lying about their income, since so many have reported zero income: The mean stated income is only ~$133 USD per month.
 
 
-### Debt to Income Historgram, non-special cases
+### Debt to Income Histogram, non-special cases
 
-In our _Debt:Income histogram_, the vast majority of the data is clustered within a very narrow range of about (0. 0.8), so we cut out the extreme outliers by setting reasonable limits of 0.1 and 1.0:
+In our __Debt:Income histogram__, the vast majority of the data is clustered within a very narrow range of about (0. 0.8), so we cut out the outliers by setting reasonable limits of 0.1 and 1.0:
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data=loans_sub, aes(x=DebtToIncomeRatio)) + 
+```{r}
+ggplot(data=loans, aes(x=DebtToIncomeRatio)) + 
   geom_histogram(binwidth=.01) +
   coord_cartesian(xlim=c(0.1, 1.0))
 ```
 
-Here we see a normal, positively-skewed distribution. Our earlier summary data for _DebtToIncomeRatio_ tells us that the mean value is 0.276.
+Here we see a normal, positively-skewed distribution. Our earlier summary data for __DebtToIncomeRatio__ tells us that the mean value is 0.276.
 
 
 ### Income Range
 
-For our next plot, we look at _Income Range_:
+For our next plot, we look at __Income Range__:
 ```{r}
-ggplot(data=loans_sub, aes(x=IncomeRange)) + 
-  geom_bar()
+ggplot(data=loans, aes(x=IncomeRange)) + 
+  geom_bar() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 This barchart looks wonderfully normal as well, though the granularity of such wide intervals is probably quite low.
 
-Next, we look at _Borrower Rate_, which is the interest rate assigned to the borrower by Prosper:
+Next, we look at __BorrowerRate__, which is the interest rate assigned to the borrower by Prosper:
 
 ```{r}
-ggplot(data=loans_sub) + 
+ggplot(data=loans) + 
   geom_histogram(aes(x=BorrowerRate), binwidth=.01) + 
   xlim(c(0.0, 0.4))
 ```
@@ -189,20 +273,25 @@ These are percentage-rates, and we see a nearly normal distribution with an inte
 
 How many borrowers are in this rate bracket, and what do their other variables look like? We subset for borrowers with rates in the open interval of (0.31, 0.32), which contains 7427 loan data entries, and we take a summary of a selection of variables:
 ```{r}
-poor_saps <- subset(loans_sub, BorrowerRate >= 0.31 & BorrowerRate <=0.32)
-summary(poor_saps[c("ProsperRating..Alpha.", "StatedMonthlyIncome", "BorrowerRate", "LenderYield", "AverageCredit")])
+poor_saps <- subset(loans, BorrowerRate >= 0.31 & BorrowerRate <=0.32)
+summary(poor_saps[c("ProsperRating..Alpha.", 
+                    "StatedMonthlyIncome", 
+                    "BorrowerRate", 
+                    "LenderYield", 
+                    "AverageCredit")])
 ```
 
-As we see, most of these people have the worst possible Prosper Rating of "HR", i.e. high-risk, with on average higher debt:income ratios, but a surprisingly high monthly income mean and median. We note that the max stated income value in our subset matches that in the summary of the full dataset, and clearly this high-earner is distorting the mean. Yet, the median monthly income remains solidly high, even for this HR subset, which might help explain why the _LenderYield_ parameters do not deviate substantially from the interest rate.
+As we see, most of these people have the worst possible Prosper Rating of "HR", i.e. high-risk, with on-average higher debt:income ratios, but a surprisingly high monthly income mean and median. We note that the max stated income value in our subset matches that in the summary of the full dataset, and clearly this high-earner is distorting the mean. Yet, the median monthly income remains solidly high, even for this HR subset, which might help explain why the __LenderYield__ parameters do not deviate substantially from the interest rate.
 
 From the perspective of Prosper, it would make sense to only offer these high-risk, high interest rate loans to individuals with high incomes.
 
-The distribution of the credit scores is a bit of a mysterious--we would expect somewhat uniformly low values for such high interest rates and terrible ratings. We also note that there are only 5 NA values for credit scores in this entire data set--this suggests that Prosper deems these values as of great importance, and they may be the best predictor of loan size, interest rate, and other fields (to be explored in the multivariate section further below).
+The distribution of the credit scores is a bit of a mystery--we would expect somewhat uniformly low values for such high interest rates and terrible ratings. We also note that there are only 5 NA values for credit scores in this entire data set--this suggests that Prosper deems these values as of great importance, and they may be the best predictor of loan size, interest rate, and other fields (to be explored in the multivariate section further below).
 
 For now, let's take a look at the distribution of monthly incomes with the self-professed millionaire outlier removed, to see if anything else emerges.
 
 ```{r}
-ggplot(data=loans_sub) + geom_histogram(aes(x=StatedMonthlyIncome), binwidth=1000) +
+ggplot(data=loans) + 
+  geom_histogram(aes(x=StatedMonthlyIncome), binwidth=1000) +
   xlim(c(0, 35000))
 ```
 
@@ -211,25 +300,36 @@ It looks like the bulk of the borrowers here inhabit the American middle-class i
 We could log10 transform our counts to flatten the peaks a bit and better visualize the right tail of this positively skewed distribution, but no good reason to do so comes to mind just yet. Given the non-trivial amounts of high-earners here, though, one wonders what their occupations and other indicators of wealth and financial activity might look like (or are they simply exaggerating?). 
 
 
-### Assigning Loan Risk: Prosper Ratings versus Prosper Scores
+## Bivariate Plots with Analysis
 
-Let's take a look at the letter-score Prosper uses to rate the risk of a particular loan to a particular lender, alongside the numerical score.
+### Debt to Income Ratio and Loan Status
 ```{r}
-ggplot(data=loans_sub) +
+valid_statuses <- c("Completed", "Current", "Chargedoff", "Defaulted")
+loans_with_status <- subset(loans, LoanStatus %in% valid_statuses)
+ggplot(data=loans_with_status, 
+       aes(x = LoanStatus, y = DebtToIncomeRatio))+ 
+  geom_boxplot() +
+  scale_y_continuous(limits = c(0.0, 1.5))
+```
+
+
+### Prosper Scores versus Prosper Ratings
+```{r}
+ggplot(data=subset(loans, !is.na(ProsperRating..Alpha.))) +
   geom_histogram(aes(x=ProsperScore), stat="count") +
   facet_wrap(~ ProsperRating..Alpha.)
 ```
 
-These histograms count up Prosper Scores, separated by so-called Prosper Ratings.
+This histogram counts up Prosper Scores, separated by so-called Prosper Ratings.
 
-At first glance, this appears quite strange. Why is there so much divergence between the two scoring methods? Prosper is pretty mum on the definition of the _ProsperRating_ (AA-HR), beyond calling it a proprietary scoring method for evaluating risk, with AA being the best, HR being the worst.
+At first glance, this appears quite strange--Why is there so much divergence between the two scoring methods? Prosper is pretty mum on the definition of the __ProsperRating__ (i.e, ratings of AA-HR), beyond calling it a proprietary scoring method for evaluating risk, with AA being the best, HR being the worst.
 
-_ProsperScores_ (not to be confused with Prosper's (Numeric) Ratings) are also defined as a risk-measuring tool in the range:
+__ProsperScores__ (not to be confused with Prosper's (Numeric) Ratings) are also defined as a risk-measuring tool in the range:
   
   1 -> 11, i.e.,
   Riskiest -> Safest
   
-If these methods have any kind of parity, we would expect a very high density of 10-11 Scores to be in the "AA" rating graph above, and we'd only expect to see scores of 1-2 or so under the "HR" facet of our graph.
+If these methods have any kind of parity, we would expect a very high density of 10-11 Scores to be in the "AA" rating graph above, and we would only expect to see scores of 1-2 under the "HR" facet of our graph.
 
 The power of the ```table``` function allows us to quickly tabulate the frequencies of ProsperScore vs. ProsperRating:
 
@@ -237,118 +337,238 @@ The power of the ```table``` function allows us to quickly tabulate the frequenc
 table(ProsperScore, ProsperRating..Alpha.)
 ```
 
-We see that there does appear to be some consistency in the frequencies between these two methods, but that the relationship appears weaker than we might hope or expect. That is, apart from the large spread of the data, the modal letter Ratings appear to correspond to particular numerical Scores, but we see some oddities: scores of 10-11 peak at the best rating of AA, a score of 9 peaks at A and 8 peaks at B, but 6 peaks at D while 4-5 peak at C. 
+We see that there does appear to be some consistency in the frequencies between these two methods, but that the relationship appears weaker than we might hope or expect. That is, aside from the large spread of the data, the modal letter Ratings appear to correspond to particular numerical Scores, though with oddities: scores of 10-11 peak at the best rating of AA, a score of 9 peaks at A and 8 peaks at B, but 6 peaks at D while 4-5 peak at C. 
 
-This divergence tells us that there are some significant differences in how risk gets assigned using these two different "proprietary" representations. 
+This divergence tells us that there are some significant differences in how risk gets assigned to using these two different "proprietary" representations. 
 
+### Average Credit Against Other Fields
+```{r Boxplot}
+ggplot(aes(x=ProsperRating..Alpha., y=AverageCredit),
+        data = subset(loans, !is.na(ProsperRating..Alpha.))) +
+  geom_boxplot(na.rm = T) + ylim(c(600,900)) +
+  geom_hline(yintercept = mean(loans$AverageCredit, na.rm = T))
+```
+
+We see some interesting results here: The median credit scores for loans rated lower than B are all quite closely clustered, with the exception of E, which is oddly lower and with greater variation than the riskiest category of HR.
+
+The horizontal line represents the avreage of all Average Credit Scores, and we see that the loans you would probably be too scared to invest in if you took Prosper's Ratings at face-value all have medians below the mean. 
+
+It's also interesting to note that the Average Credit Score ranges of ratings B through HR all roughly coincide, while the "safe" bets of AA and A do indeed appear to have narrower and higher ranges, as well as higher medians. 
+It is certainly unexpected that HR loans seem to tend towards better credit scores than E-rated loans. This suggests that credit scores are only one facet of how these ratings get assigned (or else, it's a bit of a crapshoot at the allegedly riskier end of the spectrum).
+
+### Loan Status and Average Credit
+```{r}
+status_types <- levels(loans$LoanStatus)[c(2:5)]
+loans_with_status <- filter(loans, LoanStatus %in% status_types)
+
+ggplot(data=loans_with_status, aes(x=LoanStatus, y=AverageCredit)) + 
+  geom_boxplot() +
+  ylim(400, 850)
+```
+This time, we only consider loans in these four categories of __LoanStatus__. We note some interesting things--Completed loans have a wide span of credit scores, but the 50% bulk is solidly above 700. Chargedoff loans and Defaulted loans don't suggest terribly bad credit scores on average, but they're certainly more likely to be lower than those with completed payments. And, most of all, we note how strange it is that loans currently in repayment are such a delightfully high subset with extremely high ratings. Has there been some shift in Prosper's business model to explain this? Or is this an instance of extreme cherry-picking on their part? 
+
+### Loan Status and Prosper Rating
+```{r}
+ggplot(data=loans_with_status, aes(x=ProsperRating..Alpha., fill=LoanStatus)) + 
+  geom_bar(position = "dodge") +
+  scale_color_brewer(type="qual")
+```
+Some stand-out observations:
+ - The massive spike in Completed loans with missing Prosper Ratings.
+ - The total lack of missing Ratings for loans currently in progress (makes sense, as investors need those scores).
+ - Completed loans have quite similar counts across the Prosper Ratings. 
+
+### Bivariate Correlations
+
+As noted some time ago, credit score seems to have a major impact on other aspects of a given loan entry--this makes intuitive senese, since Prosper is not likely to take things like reported income, home ownership, and other self-reported factors into great account, as all of these should be accounted for in a credit history report with greater reliability than someone's written claims.
+
+```{r CorrelationGrid}
+loans_samp <- loans[sample(1:length(loans$AverageCredit), 5000), ]
+loans_samp <- loans_samp[, c(1,4:5, 8:9, 10:12, 15)]
+
+ggcorr(loans_samp, name = "Pearson's CorrCoeff")
+```
+
+In the above correlation matrix, we see, not surprisingly, that high average credit scores correlate negatively with lender yield and also with the borrower rates attached to loans--good scores seem to indicate lower interest payments.
+
+Other noteworthies include the fairly negative coefficient between a Credit Score Rating and the estimated %-gains for the lenders (lender yield). This indicates that those with lower credit scores are more likely to fail to make payments--at least, as per Prosper's predictions.
+
+We see only slight correlation between the size of a loan and Average Credit Score--this weakness may perhaps have to do with the somewhat discrete nature of loan sizes (only well-defined amounts are on offer), and with the fact that people likely regard Prosper as a provider of only smallish loans (which it is).
+
+Further, we see that there is almost no correlation between the average of the credit scores and the debt to income ratio. This is a bit of a surprise, since one would expect there to be some relationship between the amount of debt a person can take on, and that person's credit history. But perhaps this is an industry-wide phenomenon--high credit scores reflect financial prudence and thus limited indebtedness.
+
+Stated monthly income has only weakly positive correlation with average credit scores, which we might interpret as further invalidating the validity of self-reported income.
+
+Finally, we note the almost perfect correlation between a borrower's rate of interest and lender yield. The lender yield, according to the variable book which accompanied the data set, is an estimate based on the assigned interest minus the expected servicing fee. This suggests very powerfully the extent to which Prosper is dependent on credit score reports in assigning interest rates and developing it's own estimates on ROI for its microlenders. 
 
 ## Multivariate Plots, Grouping, and Analysis
-
+### Interest Assignments and Prosper Ratings
 ```{r Interest Types over Rating}
-ggplot(data=subset(loans_sub, !is.na(ProsperRating..Alpha.)), 
-                   aes(x=BorrowerRate, y=BorrowerAPR)) +
-  geom_smooth(aes(color=ProsperRating..Alpha.))
+loans$BorrowerRate.bucket = cut(loans$BorrowerRate, 
+                                c(0. , 0.15, 0.2, 0.28, 5.1))
+
+ggplot(aes(x = BorrowerRate.bucket, 
+           y = BorrowerAPR , 
+           fill = ProsperRating..Alpha.), 
+       data = subset(loans, !is.na(ProsperRating..Alpha.)) ) + 
+  geom_boxplot( )
 ```
 
 Why have I plotted a borrower's APR against the interest rate on their loan? Simply to confirm that Prosper is using a consistent method for servicing loans (unlike an interest rate, an APR includes things like service and transaction fees, a.k.a. Prosper's share of the loan pie).
 
-We note some off-trend points, though they are few in number. We can facet these plots to get a clearer look at the Ratings in which the two rates diverge a bit.
+We note some outlier values for many of these Rate buckets, and that the Ratings have less explanatory power the the greater the interest rate on the loan--i.e., higher APR and interest rates have less variation across the Ratings. BUt, we also note that loans rated as AA or A are absent in the highest interest rate bucket.
+
+We can also facet scatter plots to get a clearer look at the Ratings in which the two rates diverge a bit.
 
 ```{r}
-ggplot(data=subset(loans_sub, !is.na(ProsperRating..Alpha.)), 
+ggplot(data=subset(loans, !is.na(ProsperRating..Alpha.)), 
                    aes(x=BorrowerRate, y=BorrowerAPR)) +
-  geom_smooth() +
-  geom_point(alpha=1/100, color = "red") +
+  geom_point(alpha=1/50, color = "red") +
   facet_wrap(~ProsperRating..Alpha.)
 ```
 
-Without surprise we note that well-rated loans enjoy generally lower interest rates, though there is quite a wide range of borrowing rates across the Prosper ratings. Is there a graduated interest rate related to the size of the loan? We shelve that question for a moment, to be pursued in a bit--for now, we note that there are different APRs assigned to the same borrower interest rates even within Rating categories. What's that about?
+This plot more clearly illustrates the distributions of loan interest and APR rates across Rating categories. 
+
+Without surprise we note that well-rated loans enjoy generally lower interest rates, though there is quite a wide range of borrowing rates across the Prosper ratings. Is there a graduated interest rate related to the size of the loan? 
+
+We shelve that question for a moment, to be pursued in a bit--for now, we note that there are different APRs assigned to the same borrower interest rates even within Rating categories. What's that about?
 
 For the most part, these varying APRs seem to range discretely, i.e., there are simply categories of APR, which we infer by the fact that each facet graph seems to be composed of four or five distinct linear trends, representing the relationship between APR and loan interest rate. This would suggest that certain categories of loans get assigned a certain percentage on top of the loan interest rate to yield an APR--i.e. the percent-increase of the additional interest is not simply a function of a Prosper Rating. 
 
-We can further decompose this distinction to see how it varies by creating a new variable, in which we represent the ratio between borrower interest rate and APR.
 
-```{r Interest Rate:APR Ratio} 
-loans_sub$APR_to_Interest <- loans_sub$BorrowerAPR/loans_sub$BorrowerRate
-
-ggplot(data=loans_sub,aes(x=APR_to_Interest)) +
-  geom_histogram(bins=100) + 
-  xlim(c(1, 1.5))
+### Income Group, Loan size, and Employment Status
+```{r}
+ggplot(aes(x = IncomeRange,
+           y = LoanOriginalAmount), 
+           data=subset(loans, (StatedMonthlyIncome < 11000))) + 
+   geom_boxplot(aes(fill = LoanStatus) )   +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-Okay, why do we see so much variation, one might even say normally distributed variation, including some painfully high ratios of APR over interest rate? 
-
-(It needs to be noted that creation of this ratio variable introduced exactly eight infinite values into our dataset, due to zero-division error.)
-
-Perhaps, more than Prosper Rating, reported income and some binary marker of financial stability, like homeownership, could better predict this discrepancy?
+### AverageCredit versus Reported Income, versus Loan Amount, Faceted for Home Ownership Status
 
 ```{r}
-p1 <-  ggplot(data=loans_sub, aes(x = APR_to_Interest, y=AverageCredit)) +
-  geom_smooth(method="lm", aes(color=IsBorrowerHomeowner)) +
-  xlim(c(1.0, 2.0))
+p1 <-  ggplot(data=subset(loans, StatedMonthlyIncome > 0), 
+              aes(x = AverageCredit, y=StatedMonthlyIncome)) +
+  geom_smooth(method="lm", aes(color=IsBorrowerHomeowner)) + xlim(300, 850)
 
-p2 <- ggplot(data=loans_sub, aes(x=APR_to_Interest, y=StatedMonthlyIncome)) +
-  geom_smooth(method="lm", aes(color=IsBorrowerHomeowner)) +
-  xlim(c(1, 2))
-
-grid.arrange(p1, p2, ncol = 1)
-```
-
-## APR-Interest Rate Ratio versus Reported Income, versus Loan Amount, Faceted for Home Ownership Status
-
-```{r}
-p1 <-  ggplot(data=loans_sub, aes(x = AverageCredit, y=StatedMonthlyIncome)) +
-  geom_smooth(method="lm", aes(color=IsBorrowerHomeowner))
-
-p2 <- ggplot(data=loans_sub, aes(x=AverageCredit, y=LoanOriginalAmount)) +
-  geom_smooth(method="lm", aes(color=IsBorrowerHomeowner))
+p2 <- ggplot(data=loans, aes(x=AverageCredit, y=LoanOriginalAmount)) +
+  geom_smooth(method="lm", aes(color=IsBorrowerHomeowner)) + xlim(300, 850)
 
 grid.arrange(p1,p2, ncol = 1)
+
+lm(AverageCredit ~ BorrowerRate, 
+   data=subset(loans, IsBorrowerHomeowner == "True"))
+
+lm(AverageCredit ~ BorrowerRate, 
+   data=subset(loans, IsBorrowerHomeowner == "False"))
 ```
 
-Our geometric smoothing function has done a good job of minimizing the effect of those with $0 reported income. 
+The oddly truncated lines owe to the fact that I have restricted the AverageCredit values to the range of possible FICO scores. 
 
-Apart from the obvious fact that homeowners tend to report higher monthly incomes in this dataset (the graph marked True on the rigth), we see, with surprisingly small variation, a solidly positive linear trend between the size of one's APR against the interest rate and one's monthly income. We see essentially the same trend for LoanOriginalAmount and the rate ratio. Probably this is a common-sense finding, but it's nice to see it well-visualized here.
+Apart from the obvious fact that homeowners tend to report higher monthly incomes across both distributions, we see clear linear relationships between AverageCredit scores and both StatedMonthlyIncome and LoanOriginalAmount. 
 
-Homeowners seem to enjoy substantially higher minimum loans as well as an average higher income, though naturally, we don't take visual confirmation at face-value: we need to run a linear regression model to evaluate the fit of these lines.
+The lack of variation (the grey coloring around a line) between datapoints in the Credit vs. Loans graph likely owes to the fact that these values, __LoanOriginalAmount__ in particular, are essentially discrete. A look at the min and max values and their counts shows us that __LoanOriginalAmounts__ are well-defined values ranging from $1000-$35000. Prosper thus seems to offer only a limited set of loan values.
 
+Average Credit scores are similarly semi-discrete in nature, as our earlier histogram showed us. Further, homeowners seem to enjoy substantially higher minimum loans as well as an average higher income over their renter-peers.
+
+### Monthly Payments and Debt/Income Ratios by Prosper Rating
 ```{r}
-lm(AverageCredit ~ APR_to_Interest, 
-   data=subset(loans_sub, IsBorrowerHomeowner == "True" & !is.infinite(APR_to_Interest)))
-
-lm(AverageCredit ~ APR_to_Interest, 
-   data=subset(loans_sub, IsBorrowerHomeowner == "True" & !is.infinite(APR_to_Interest)))
+ggplot(data=subset(loans, !is.na(ProsperRating..Alpha.)), 
+       aes(x = MonthlyLoanPayment, y = DebtToIncomeRatio, 
+           color = ProsperRating..Alpha.)) +
+  geom_point(alpha = 0.5, size = 1) +
+  scale_x_continuous(limits=c(0, 1500)) +
+  scale_y_continuous(limits = c(0.0, 1.5))
 ```
+We have a great deal of overplotting here, somewhat mitigated by reducing the intensity of individual points, but there is a trade-off between this and the legibility of the legend.
 
-### Average Credit and Correlations with Other Variables
+Yet, we can see that lower rated loans cluster at the low-payment side of the chart, with wide variability around the __DebtToIncomeRatio__. We also see that more highly rated loans span the range of payment sizes, but generally are in less financially precarious straits (lower ratios).
 
-As noted some time ago, credit score seems to have a major impact on other aspects of a given loan entry--this makes intuitive senese, since Prosper is not likely to take things like reported income, home ownership, and other self-reported factors into great account, as all of these should be accounted for in a credit history report.
 
-```{r CorrMatrix}
-loans_samp <- loans_sub[sample(1:length(loans_sub$AverageCredit), 5000), ]
-loans_samp <- loans_samp[, c(4:5, 8:9, 11:12, 14, 16)]
+## Final Plots and Summary
 
-ggpairs(loans_samp,
-  lower = list(continuous = wrap("points", shape = I('.'))),
-  upper = list(combo = wrap("box", outlier.shape = I('.'))),
-  axisLabels = "internal")
-```
-
-In the above correlation matrix, we see, not surprisingly, that high average credit scores correlate negatively with lender yield--good scores seem to indicate lower interest payments. The scores also correlate somewhat positively with the initial size of a loan, which makes sense--if you have a better credit score, you can potentially borrow more.
-
-Other noteworthies include the fairly (-o.458) negative coefficient between a Credit Score Rating and the %-gains for the lenders (lender yield). This indicates that those with lower credit scores are more likely to fail to make payments.
-
-Further, we see that there is almost no correlation between the average of the credit scores and the debt to income ratio. This is a bit of a surprise, since one would expect there to be some relationship between the amount of debt a person can take on, and that person's credit history.
-
-Stated monthly income has only weakly positive correlation with average credit scores, which we might interpret as further invalidating the validity of self-reported income.
-
-Finally, we note the almost perfect correlation between a borrower's rate of interest and lender yield--does this suggest that virtually all of these loans are being successfully repaid? If so, that would be an impossibly rosy outcome, which would make me think that these data have been cherry-picked by Prosper. 
-
-What is the proportion of delinquent loans out of the toal of loan original amounts?
+### Plot One: ProsperRating and Loan Status Revisited
+This time, we normalize the bars according to the total types of Loan Status for the different Prosper Ratings, using some __dplyr__ trickery courtesy of StackOverflow.
 ```{r}
-sum(loans_sub$AmountDelinquent, na.rm = T)/sum(loans_sub$LoanOriginalAmount)
+grouped_status <- loans_with_status %>% 
+  group_by(ProsperRating..Alpha., LoanStatus) %>% 
+  summarize(Counts = n()) %>% 
+  group_by(ProsperRating..Alpha.) %>%
+  mutate(Relative.Freq = Counts/sum(Counts)) %>%
+  arrange(ProsperRating..Alpha.)
+
+ggplot(data=grouped_status, aes(x=ProsperRating..Alpha., 
+                                   y=Relative.Freq,
+                                   fill=LoanStatus)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_color_brewer(type="seq") +
+  ggtitle("Relative Frequencies of Loans by Prosper Rating and Loan Status") +
+  xlab("Prosper Rating Category") +
+  ylab("Frequency, Relative to Total Loans in a Rating Category")
+#dplyr help courtesy of this SO thread, which is itself courtesy of mentor Myles
+#on the Udacity discussion forum: 
+#https://stackoverflow.com/questions/24576515/relative-frequencies-proportions-with-dplyr
 ```
-About 11%. 
+
+Okay, this looks less bad than we previously thought. It remains strange that the NA category leads the way, in relative terms and absolute terms still, with loan repayment failures. One may assume that all loans that are no longer current have such information scrubbed at some regular juncture, but one could also wax paranoid and suspect Prosper of deliberately removing such essential information from bad loans as soon as possible. 
+
+That said, it is more than passing odd that AA and D ratings have roughly the same completion rates in this set, that HR loans are proportionally the most likely to be properly paid-off, and that the HR rating has the smallest proportion of current, trouble-free loans in the whole dataset.
+
+### Plot Two: AverageCredit Scores Across Prosper Ratings Boxplot
+```{r}
+ggplot(subset(loans, !is.na(ProsperRating..Alpha.)), 
+              aes(x=ProsperRating..Alpha., y=AverageCredit, 
+                  fill=ProsperRating..Alpha.)) +
+  ggtitle("Average Credit Boxplot by Prosper Rating") +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position = 'none') +
+  geom_hline(yintercept = mean(loans$AverageCredit, na.rm = T), 
+             col="red") +
+  stat_summary(fun.y=mean, 
+               geom="point", 
+               shape=20, 
+               size=5, 
+               color="blue", 
+               fill="red") +
+  scale_fill_brewer(palette="Set3") +
+  ylim(600, 850) +
+  xlab("ProsperRating") +
+  ylab("Average Credit Scores")
+
+#adapted from http://www.r-graph-gallery.com/269-ggplot2-boxplot-with-average-value/
+```
+This far more colorful version of the boxplot has __AverageCreditScore__ means for each Rating represented by the blue dots, as well as the overall mean represented once more by the horizontal line.
+
+We note that the individual means do not diverge as much as we might expect, given the many outliers represented by the black dots beyond the whiskers. This is likely due to the large number of observations we have, and/or due to the outliers being relatively few in quantity.
 
 
+### Plot Three: Debt to Income Ratio and Monthly Loan Payment
+```{r}
+ggplot(data=subset(loans, !is.na(ProsperRating..Alpha.)), 
+       aes(x = MonthlyLoanPayment, y = DebtToIncomeRatio, 
+           color = ProsperRating..Alpha.)) +
+  ggtitle("Debt to Income Ratio Versus Stated Monthly Income") + 
+  geom_point(alpha = 0.8, size = 1) +
+  stat_ellipse(size=2) +
+  scale_x_continuous(limits=c(0, 1500)) +
+  scale_y_continuous(limits = c(0.0, 1.5)) +
+  xlab(label = "Monthly Loan Payments in USD") +
+  ylab(label = "Ratio of Debt to Borrower Income") +
+  scale_color_brewer(type='seq', palette = "PuBuGn",
+                   guide=guide_legend(title='ProsperRating'))
+```
 
+This graphic does an interesting job of revealing the distribution of these variables, and we note that well-rated loans seem to range widely across payment amounts while largely avoiding high ratios of indebtedness. We see that the less well-rated loans are more likely to have higher Debt:Income ratios while also seeming to cluster at the lower end of the monthly payment range, probably because these people simply don't qualify for large loans.
+
+And yet, this plot points to a recurring problem that has dogged this analysis--data that we might expect to be continuous are not quite so. For human-generated values like __StatedMonthlyIncome__, it is a well-known phenomenon that values provided by people cluster around multiples of ten--it is simply too tempting to round up or down to pad a value with zeroes when providing a number, perhaps for reasons related to aesthetics or cognitive-load. 
+
+In the case of fields with value ranges determined by Prosper, such as potential loan size, interest rates, and monthly payment sizes, the data seem limited to a predetermined set of discrete values--as our plot reveals with its well-defined vertical stacking of points at particlar payment amounts.
+
+## Reflection
+
+This project has been a mammoth undertaking--having 81 variables to choose from meant from the start attempting to make guesses about what fields might prove to be of interest _after_ the actual analysis.I found myself on four or five occasions having to go back and introduce new fields and remove others, as the exploratory data analysis process led me on to new questions and new exploratory paths. 
+
+I think, even at this early stage in the process of the data project cycle, I would have been greatly helped by having had greater background information into the data generation processes, the validity of some of the fields, and these would have in turn led me to formulate a more specific set of questions that would have kept this analysis from getting out of hand.
+
+I will chalk that up to lessons learned: Never start a massive EDA project without having some well-defined questions prepared!
