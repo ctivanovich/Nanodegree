@@ -21,7 +21,7 @@ pre {
 </style>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = F, 
+knitr::opts_chunk$set(echo = T, 
                       warning = F, 
                       message = F, 
                       fig.width = 7, 
@@ -59,12 +59,14 @@ variables = c("ProsperScore",
 
 loans <- read.csv("prosperLoanData.csv", na.strings=c("",".","NA"))[variables]
 
+attach(loans)
+```
+
+```{r create new feature}
 loans$AverageCredit <- round((loans$CreditScoreRangeUpper + 
                               loans$CreditScoreRangeLower)/2)
 
 loans <- loans[-15:-16]
-
-attach(loans)
 ```
 
 
