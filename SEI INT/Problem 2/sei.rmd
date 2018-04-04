@@ -1,0 +1,64 @@
+---
+title: "SEI prob 2"
+author: "Christopher Ivanovich"
+date: "December 7, 2017"
+output: html_document
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = F, 
+                      warning = F, 
+                      message = F, 
+                      fig.width = 16, 
+                      fig.align = "center", 
+                      out.width = "80%", 
+                      fig.height = 12)
+
+```
+
+
+```{r}
+library(maptools)
+library(tidyverse)
+area <- readShapePoly("br_mun.shp")
+soy <- read_csv("BRAZIL_SOY_2.2.csv")
+```
+
+```{r}
+library(RColorBrewer)
+colors <- brewer.pal(9, "RdPu")
+
+library(ggmap)
+mapImage <- get_map(location = "Brazil",
+  color = "color",
+  source = "google",
+  maptype = "terrain",
+  zoom = 4)
+```
+
+```{r echo=FALSE}
+area.points <- fortify(area)
+```
+
+```{r echo=FALSE}
+ggmap(mapImage) +
+  geom_polygon(aes(x = long,
+      y = lat,
+      group = group),
+    data = area.points,
+    color = colors[9],
+    fill = colors[6],
+    alpha = 0.5) +
+labs(x = "Longitude",
+  y = "Latitude")
+```
+
+```{r}
+top_5_exp <- soy %>% 
+  subset(is.numeric("SOY_EQUIVALENT_TONS")) %>%
+  group_by(c("EXPORTER")) %>% 
+  sum()
+```
+
+

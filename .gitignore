@@ -17,6 +17,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+
+#No need to add data sets
+*.xls
+*.xlsx
+*.csv
 # =========================
 # Operating System Files
 # =========================
